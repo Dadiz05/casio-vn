@@ -3,6 +3,8 @@ import { ArrowRight, Shield, Clock, Award } from "lucide-react";
 import { useStore } from "../store/useStore.js";
 import ProductCard from "../components/ProductCard.jsx";
 
+import FloatingContact from "../components/FloatingContact.jsx";
+
 export default function Home() {
   const { products } = useStore();
 
@@ -11,6 +13,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen">
+       <FloatingContact />
       {/* Hero Section */}
       <div className="relative h-screen bg-black flex items-center">
         <div className="absolute inset-0 bg-[url('https://picsum.photos/id/1015/1920/1080')] bg-cover bg-center opacity-60"></div>
