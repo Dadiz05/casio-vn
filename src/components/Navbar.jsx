@@ -2,8 +2,9 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ShoppingCart, User, LogOut, Menu, X } from "lucide-react";
 import { useStore } from "../store/useStore.js";
-
+import SearchBar from "./SearchBar";
 export default function Navbar() {
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -16,6 +17,7 @@ export default function Navbar() {
     navigate("/login");
     setIsMenuOpen(false);
   };
+  const { products } = useStore();
 
   return (
     <nav className="bg-black text-white sticky top-0 z-50 shadow-md">
@@ -29,6 +31,10 @@ export default function Navbar() {
             CASIO <span className="text-yellow-400">VN</span>
           </Link>
 
+          {/* SearchBar - thêm wrapper này */}
+          <div className="flex-1 max-w-md hidden md:block">
+            <SearchBar products={products} />
+          </div>
           {/* Menu Desktop */}
           <div className="hidden md:flex items-center gap-8">
             <Link to="/" className="hover:text-yellow-400 transition-colors">
