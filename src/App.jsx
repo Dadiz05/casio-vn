@@ -1,5 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar.jsx";
+import Footer from "./components/Footer.jsx"; // ← Đã thêm
+
 import Home from "./pages/Home.jsx";
 import Shop from "./pages/Shop.jsx";
 import ProductDetail from "./pages/ProductDetail.jsx";
@@ -16,10 +18,10 @@ import AdminUsers from "./pages/admin/Users.jsx";
 
 function App() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       <Navbar />
 
-      <main className="pt-16">
+      <main className="flex-1 pt-16">
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<Home />} />
@@ -37,6 +39,9 @@ function App() {
           <Route path="/admin/users" element={<AdminUsers />} />
         </Routes>
       </main>
+
+      {/* Footer - Luôn hiển thị ở dưới cùng */}
+      <Footer />
     </div>
   );
 }
