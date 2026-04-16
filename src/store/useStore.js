@@ -6,76 +6,112 @@ const useStore = create((set, get) => ({
   setUser: (userData) => set({ user: userData }),
   logout: () => set({ user: null }),
 
-  // Products - 104 sản phẩm với hình ảnh thật
+  // Products - Mỗi sản phẩm có 5 hình ảnh
   products: [
-    // === SẢN PHẨM GỐC + MỚI CÓ ẢNH THẬT ===
-
     {
       id: "1",
-      name: "G-Shock DW-5600BB",
-      price: 2450000,
+      name: "GMA-P2100SR-1A",
+      price: 3290000,
       category: "G-Shock",
-      image: "https://i.ibb.co/RkDQCxXy/MTP-B190L-7BV.jpg",
-      description: "Đồng hồ thể thao chống sốc huyền thoại"
+      image: "https://cdn.casio-vietnam.vn/wp-content/uploads/2026/04/GMA-P2100SR-1A.jpg", // ảnh chính
+      images: [
+        "https://cdn.casio-vietnam.vn/wp-content/uploads/2026/04/GMA-P2100SR-1A.jpg",
+        "https://cdn.casio-vietnam.vn/wp-content/uploads/2026/04/z7710868514913_02daeab3d5aa72f5cc92114213392aeb.jpg",
+        "https://cdn.casio-vietnam.vn/wp-content/uploads/2026/04/z7710868375261_70ff55d1670ea738ec0cf680cc03e34c.jpg",
+        "https://cdn.casio-vietnam.vn/wp-content/uploads/2026/04/z7710868019709_a91d195aa228cfcd55a71955acfc5b22.jpg",
+        "https://cdn.casio-vietnam.vn/wp-content/uploads/2026/04/z7710868019711_7cad218184949c83e4dbbb03c9b45360.jpg",
+        "https://cdn.casio-vietnam.vn/wp-content/uploads/2026/04/z7710867989741_9a7fcf5b2a0f4ab4c96b809dccb7b2a7.jpg"
+      ],
+      description: "Nhỏ gọn, tinh tế, thời trang — GMA-P2100 tỏa sáng như ánh nắng mùa hè.",
+      fullDescription: "Nhỏ gọn, tinh tế, thời trang — GMA-P2100 tỏa sáng như ánh nắng mùa hè. Được xử lý bằng phương pháp lắng đọng hơi phân cực, mặt kính đồng hồ mang đến cảm giác mùa hè ngập tràn ánh nắng với màu sắc thay đổi theo chuyển động cổ tay.",
+      
+      specs: {
+        size: "46 × 40.2 × 11.2 mm",
+        weight: "40 g",
+        caseMaterial: "Nhựa",
+        strapMaterial: "Dây đeo bằng nhựa",
+        structure: "Chống va đập",
+        waterResistance: "Khả năng chống nước ở độ sâu 200 mét",
+        batteryLife: "Tuổi thọ pin xấp xỉ: 3 năm đối với pin CR1025",
+        glass: "Mặt kính khoáng",
+        strapSize: "145 đến 190 mm",
+        other: "Neobrite"
+      },
+      
+      features: [
+        "Giờ thế giới 31 múi giờ",
+        "Đồng hồ bấm giờ 1/100 giây",
+        "Đồng hồ đếm ngược 24 giờ",
+        "5 chế độ báo thức hàng ngày",
+        "Hai đèn LED chiếu sáng cực mạnh",
+        "Lịch hoàn toàn tự động đến năm 2099",
+        "Tính năng chuyển kim",
+        "Định dạng giờ 12/24"
+      ]
     },
+
+    // Sản phẩm 2
     {
       id: "2",
       name: "Edifice EF-527D-1A",
       price: 3890000,
       category: "Edifice",
-      image: "https://cdn.casio-vietnam.vn/wp-content/uploads/2026/04/GD-010BEG-1.jpg",
-      description: "Thiết kế sang trọng, lịch lãm"
+      image: "https://cdn.casio-vietnam.vn/wp-content/uploads/2022/02/EFV-140L-7AV.png",
+      // images: [
+      //   "https://www.casio.com/content/dam/casio/product-info/locales/vn/vi/timepiece/product/image/EF/EF-527/EF-527D-1A.png",
+      //   "https://picsum.photos/id/201/600/600",
+      //   "https://picsum.photos/id/202/600/600",
+      //   "https://picsum.photos/id/203/600/600",
+      //   "https://picsum.photos/id/204/600/600"
+      // ],
+      description: "Thiết kế sang trọng, lịch lãm với chronograph chính xác.",
+      fullDescription: "Edifice EF-527D-1A mang phong cách lịch lãm, phù hợp cho doanh nhân và người yêu thích sự tinh tế.",
+      specs: {
+        size: "48.5 × 42.5 × 11.8 mm",
+        weight: "105 g",
+        caseMaterial: "Thép không gỉ",
+        strapMaterial: "Dây kim loại",
+        waterResistance: "100 mét"
+      },
+      features: ["Chronograph", "Giờ thế giới", "Đèn LED"]
     },
+
+    // Sản phẩm 3
     {
       id: "3",
       name: "Baby-G BGD-565-7",
       price: 1890000,
       category: "Baby-G",
-      image: "https://gshock.casio.com/content/dam/casio/product-info/locales/vn/vi/timepiece/product/image/BG/BGD-565/BGD-565-7.png",
-      description: "Dành cho nữ, phong cách thể thao năng động"
+      image: "https://cdn.casio-vietnam.vn/wp-content/uploads/2024/03/BGD-565-7.jpg",
+      images: [
+        "https://cdn.casio-vietnam.vn/wp-content/uploads/2024/03/BGD-565-7.jpg",
+        "https://cdn.casio-vietnam.vn/wp-content/uploads/2024/03/z5209851405773_e899d556ddf5da3dc2ac48796c76cd92.jpg",
+        "https://cdn.casio-vietnam.vn/wp-content/uploads/2024/03/z5209851405704_5e2abff74c6fcf136158167323bb86f1.jpg"
+      ],
+      description: "Dành cho nữ, phong cách thể thao năng động.",
+      fullDescription: "Baby-G BGD-565-7 với thiết kế trẻ trung, màu sắc tươi sáng phù hợp cho phái nữ.",
+      specs: {
+        size: "44.7 × 40.0 × 12.6 mm",
+        weight: "43 g",
+        caseMaterial: "Nhựa",
+        strapMaterial: "Dây đeo bằng nhựa",
+        waterResistance: "100 mét"
+      },
+      features: ["Chống va đập", "Chống nước 100 mét", "Đèn LED"]
     },
-    {
-      id: "4",
-      name: "Casio AE-1200WH",
-      price: 890000,
-      category: "Classic",
-      image: "https://www.casio.com/content/dam/casio/product-info/locales/vn/vi/timepiece/product/image/AE/AE-1200/AE-1200WH-1A.png",
-      description: "Đồng hồ điện tử đa năng"
-    },
 
-    // G-Shock (nhiều mẫu hot)
-    { id: "5", name: "G-Shock GA-2100-1A", price: 2890000, category: "G-Shock", image: "https://gshock.casio.com/content/dam/casio/product-info/locales/vn/vi/timepiece/product/image/GA/GA-2100/GA-2100-1A.png", description: "CasiOak - Thiết kế mỏng nhẹ cực hot" },
-    { id: "6", name: "G-Shock GA-2100K-5A", price: 2990000, category: "G-Shock", image: "https://gshock.casio.com/content/dam/casio/product-info/locales/vn/vi/timepiece/product/image/GA/GA-2100/GA-2100K-5A.png", description: "Phiên bản khaki thời trang" },
-    { id: "7", name: "G-Shock DW-5600E-1V", price: 2190000, category: "G-Shock", image: "https://gshock.casio.com/content/dam/casio/product-info/locales/vn/vi/timepiece/product/image/DW/DW-5600/DW-5600E-1V.png", description: "Square huyền thoại" },
-    { id: "8", name: "G-Shock GW-M5610-1", price: 3990000, category: "G-Shock", image: "https://gshock.casio.com/content/dam/casio/product-info/locales/vn/vi/timepiece/product/image/GW/GW-M5610/GW-M5610-1.png", description: "Solar + Multiband 6" },
-    { id: "9", name: "G-Shock GA-700-1A", price: 2690000, category: "G-Shock", image: "https://gshock.casio.com/content/dam/casio/product-info/locales/vn/vi/timepiece/product/image/GA/GA-700/GA-700-1A.png", description: "Analog-Digital lớn" },
-    { id: "10", name: "G-Shock GA-110GB-1A", price: 3290000, category: "G-Shock", image: "https://gshock.casio.com/content/dam/casio/product-info/locales/vn/vi/timepiece/product/image/GA/GA-110/GA-110GB-1A.png", description: "Màu đen vàng sang trọng" },
-
-    // Edifice
-    { id: "11", name: "Edifice EFV-610D-1A", price: 3290000, category: "Edifice", image: "https://www.casio.com/content/dam/casio/product-info/locales/vn/vi/timepiece/product/image/EF/EFV-610/EFV-610D-1A.png", description: "Chronograph lịch lãm" },
-    { id: "12", name: "Edifice EFR-571D-1A", price: 4190000, category: "Edifice", image: "https://www.casio.com/content/dam/casio/product-info/locales/vn/vi/timepiece/product/image/EF/EFR-571/EFR-571D-1A.png", description: "Thiết kế tốc độ cao" },
-    { id: "13", name: "Edifice ECB-900DB-1A", price: 5290000, category: "Edifice", image: "https://www.casio.com/content/dam/casio/product-info/locales/vn/vi/timepiece/product/image/EC/ECB-900/ECB-900DB-1A.png", description: "Bluetooth + Solar" },
-
-    // Baby-G
-    { id: "14", name: "Baby-G BA-110-1A", price: 2290000, category: "Baby-G", image: "https://gshock.casio.com/content/dam/casio/product-info/locales/vn/vi/timepiece/product/image/BA/BA-110/BA-110-1A.png", description: "Phong cách đường phố" },
-    { id: "15", name: "Baby-G BGA-230-7A", price: 1990000, category: "Baby-G", image: "https://gshock.casio.com/content/dam/casio/product-info/locales/vn/vi/timepiece/product/image/BG/BGA-230/BGA-230-7A.png", description: "Màu pastel nữ tính" },
-
-    // Classic
-    { id: "16", name: "Casio MTP-1300D-1A", price: 1290000, category: "Classic", image: "https://www.casio.com/content/dam/casio/product-info/locales/vn/vi/timepiece/product/image/MT/MTP-1300/MTP-1300D-1A.png", description: "Analog thanh lịch" },
-    { id: "17", name: "Casio LTP-1183A-1A", price: 890000, category: "Classic", image: "https://www.casio.com/content/dam/casio/product-info/locales/vn/vi/timepiece/product/image/LT/LTP-1183/LTP-1183A-1A.png", description: "Dành cho nữ" },
-
-    // === 87 sản phẩm còn lại (sử dụng ảnh chất lượng cao từ Casio) ===
-    ...Array.from({ length: 87 }, (_, i) => {
+    // Các sản phẩm còn lại (tự động tạo 5 ảnh)
+    ...Array.from({ length: 101 }, (_, i) => {
       const categories = ["G-Shock", "Edifice", "Baby-G", "Classic"];
       const cat = categories[i % 4];
-      const baseId = 18 + i;
-      
+      const baseId = 4 + i;
+
       let name = "";
       let price = 0;
       let desc = "";
 
       if (cat === "G-Shock") {
-        name = `G-Shock GA-2${100 + i} Series`;
+        name = `G-Shock GA-${2100 + i}`;
         price = 2390000 + (i % 30) * 80000;
         desc = "Đồng hồ G-Shock chống sốc bền bỉ";
       } else if (cat === "Edifice") {
@@ -87,25 +123,41 @@ const useStore = create((set, get) => ({
         price = 1790000 + (i % 25) * 60000;
         desc = "Baby-G phong cách năng động";
       } else {
-        name = `Casio Vintage F-${90 + i}`;
+        name = `Casio Classic F-${90 + i}`;
         price = 790000 + (i % 20) * 40000;
         desc = "Casio Classic giá tốt";
       }
 
       return {
         id: baseId.toString(),
-        name: name,
-        price: price,
+        name,
+        price,
         category: cat,
-        image: `https://picsum.photos/id/${300 + i}/600/600`, // Ảnh đẹp ngẫu nhiên chất lượng cao (tạm thời)
-        description: desc
+        image: `https://cdn.casio-vietnam.vn/wp-content/uploads/2026/04/BGA-15K-2A.jpg`, // ảnh chính
+        images: [
+          `https://cdn.casio-vietnam.vn/wp-content/uploads/2026/04/z7714611160563_318ac475ecea58c2f4291c74c512bc94.jpg`,
+          `https://cdn.casio-vietnam.vn/wp-content/uploads/2026/04/z7714611054089_a5882fcbf303493eec882ce9aa92eb1b.jpg`,
+          `https://cdn.casio-vietnam.vn/wp-content/uploads/2026/04/z7714611433262_ac75daaedeb18455e68de7f256d2bcd2.jpg`,
+          `https://cdn.casio-vietnam.vn/wp-content/uploads/2026/04/z7714610835578_6feaa52beebf1ec4570987f94df8c193.jpg`,
+          `https://cdn.casio-vietnam.vn/wp-content/uploads/2026/04/z7714610985071_853f396232e4149a6d9ce0cd9ce497c2.jpg`
+        ],
+        description: desc,
+        fullDescription: `${desc}. Sản phẩm chính hãng Casio Nhật Bản với thiết kế hiện đại và độ bền cao.`,
+        specs: {
+          size: "45 × 40 × 12 mm",
+          weight: "45 g",
+          caseMaterial: "Nhựa / Thép",
+          strapMaterial: "Dây nhựa / Kim loại",
+          waterResistance: "100 - 200 mét"
+        },
+        features: ["Chống va đập", "Chống nước", "Đèn LED", "Lịch tự động"]
       };
     })
   ],
 
   setProducts: (newProducts) => set({ products: newProducts }),
 
-  // Cart functions (giữ nguyên)
+  // Cart functions
   cart: [],
 
   addToCart: (product) => {
