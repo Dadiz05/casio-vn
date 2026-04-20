@@ -1,5 +1,24 @@
 import { create } from 'zustand';
 
+const LEGACY_IMAGE_POOL = [
+  "https://cdn.casio-vietnam.vn/wp-content/uploads/2026/04/GMA-P2100SR-1A.jpg",
+  "https://cdn.casio-vietnam.vn/wp-content/uploads/2026/04/z7710868514913_02daeab3d5aa72f5cc92114213392aeb.jpg",
+  "https://cdn.casio-vietnam.vn/wp-content/uploads/2026/04/z7710868375261_70ff55d1670ea738ec0cf680cc03e34c.jpg",
+  "https://cdn.casio-vietnam.vn/wp-content/uploads/2026/04/z7710868019709_a91d195aa228cfcd55a71955acfc5b22.jpg",
+  "https://cdn.casio-vietnam.vn/wp-content/uploads/2026/04/z7710868019711_7cad218184949c83e4dbbb03c9b45360.jpg",
+  "https://cdn.casio-vietnam.vn/wp-content/uploads/2026/04/z7710867989741_9a7fcf5b2a0f4ab4c96b809dccb7b2a7.jpg",
+  "https://cdn.casio-vietnam.vn/wp-content/uploads/2022/02/EFV-140L-7AV.png",
+  "https://cdn.casio-vietnam.vn/wp-content/uploads/2024/03/BGD-565-7.jpg",
+  "https://cdn.casio-vietnam.vn/wp-content/uploads/2024/03/z5209851405773_e899d556ddf5da3dc2ac48796c76cd92.jpg",
+  "https://cdn.casio-vietnam.vn/wp-content/uploads/2024/03/z5209851405704_5e2abff74c6fcf136158167323bb86f1.jpg",
+  "https://cdn.casio-vietnam.vn/wp-content/uploads/2026/04/BGA-15K-2A.jpg",
+  "https://cdn.casio-vietnam.vn/wp-content/uploads/2026/04/z7714611160563_318ac475ecea58c2f4291c74c512bc94.jpg",
+  "https://cdn.casio-vietnam.vn/wp-content/uploads/2026/04/z7714611054089_a5882fcbf303493eec882ce9aa92eb1b.jpg",
+  "https://cdn.casio-vietnam.vn/wp-content/uploads/2026/04/z7714611433262_ac75daaedeb18455e68de7f256d2bcd2.jpg",
+  "https://cdn.casio-vietnam.vn/wp-content/uploads/2026/04/z7714610835578_6feaa52beebf1ec4570987f94df8c193.jpg",
+  "https://cdn.casio-vietnam.vn/wp-content/uploads/2026/04/z7714610985071_853f396232e4149a6d9ce0cd9ce497c2.jpg"
+];
+
 const useStore = create((set, get) => ({
   // Auth
   user: null,
@@ -100,57 +119,91 @@ const useStore = create((set, get) => ({
       features: ["Chống va đập", "Chống nước 100 mét", "Đèn LED"]
     },
 
-    // Các sản phẩm còn lại (tự động tạo 5 ảnh)
-    ...Array.from({ length: 101 }, (_, i) => {
+    // Các sản phẩm còn lại (97 sản phẩm, để tổng toàn bộ = 100 và id từ 1 đến 100)
+    ...Array.from({ length: 97 }, (_, i) => {
       const categories = ["G-Shock", "Edifice", "Baby-G", "Classic"];
       const cat = categories[i % 4];
       const baseId = 4 + i;
+      const imageStart = i % LEGACY_IMAGE_POOL.length;
+      const gallery = Array.from({ length: 5 }, (_, offset) => {
+        const poolIndex = (imageStart + offset) % LEGACY_IMAGE_POOL.length;
+        return LEGACY_IMAGE_POOL[poolIndex];
+      });
+
+      const suffix = (i + 11).toString().padStart(2, "0");
 
       let name = "";
       let price = 0;
       let desc = "";
+      let waterResistance = "100 mét";
+      let caseMaterial = "Nhựa / Thép";
+      let strapMaterial = "Dây nhựa / Kim loại";
 
       if (cat === "G-Shock") {
-        name = `G-Shock GA-${2100 + i}`;
-        price = 2390000 + (i % 30) * 80000;
-        desc = "Đồng hồ G-Shock chống sốc bền bỉ";
+        name = `G-Shock GA-${2100 + i}-${suffix}`;
+        price = 2490000 + (i % 26) * 90000;
+        desc = "Đồng hồ G-Shock chống sốc bền bỉ, phù hợp hoạt động cường độ cao";
+        waterResistance = "200 mét";
+        caseMaterial = "Nhựa gia cường carbon";
+        strapMaterial = "Dây resin cao cấp";
       } else if (cat === "Edifice") {
-        name = `Edifice EF-${500 + i}D`;
-        price = 3190000 + (i % 25) * 100000;
-        desc = "Edifice chronograph sang trọng";
+        name = `Edifice EF-${500 + i}D-${suffix}`;
+        price = 3290000 + (i % 24) * 110000;
+        desc = "Edifice chronograph sang trọng, nhấn mạnh độ chính xác khi vận hành";
+        waterResistance = "100 mét";
+        caseMaterial = "Thép không gỉ";
+        strapMaterial = "Dây kim loại";
       } else if (cat === "Baby-G") {
-        name = `Baby-G BGD-${300 + i}`;
-        price = 1790000 + (i % 25) * 60000;
-        desc = "Baby-G phong cách năng động";
+        name = `Baby-G BGD-${300 + i}-${suffix}`;
+        price = 1890000 + (i % 20) * 70000;
+        desc = "Baby-G phong cách năng động, gọn nhẹ cho nhịp sống hàng ngày";
+        waterResistance = "100 mét";
+        caseMaterial = "Nhựa sinh học";
+        strapMaterial = "Dây đeo bằng nhựa mềm";
       } else {
-        name = `Casio Classic F-${90 + i}`;
-        price = 790000 + (i % 20) * 40000;
-        desc = "Casio Classic giá tốt";
+        name = `Casio Classic F-${90 + i}-${suffix}`;
+        price = 890000 + (i % 22) * 45000;
+        desc = "Casio Classic giá tốt, thiết kế tối giản và dễ phối trang phục";
+        waterResistance = "50 mét";
+        caseMaterial = "Nhựa / Hợp kim";
+        strapMaterial = "Dây nhựa / Dây da";
       }
+
+      const featurePool = [
+        "Chống va đập",
+        "Chống nước",
+        "Đèn LED",
+        "Lịch tự động",
+        "Báo thức đa năng",
+        "Giờ thế giới",
+        "Đồng hồ bấm giờ",
+        "Đếm ngược",
+        "Định dạng giờ 12/24",
+        "Mặt kính khoáng"
+      ];
+
+      const features = Array.from({ length: 4 }, (_, featureOffset) => {
+        const featureIndex = (i + featureOffset * 2) % featurePool.length;
+        return featurePool[featureIndex];
+      });
 
       return {
         id: baseId.toString(),
         name,
         price,
         category: cat,
-        image: `https://cdn.casio-vietnam.vn/wp-content/uploads/2026/04/BGA-15K-2A.jpg`, // ảnh chính
-        images: [
-          `https://cdn.casio-vietnam.vn/wp-content/uploads/2026/04/z7714611160563_318ac475ecea58c2f4291c74c512bc94.jpg`,
-          `https://cdn.casio-vietnam.vn/wp-content/uploads/2026/04/z7714611054089_a5882fcbf303493eec882ce9aa92eb1b.jpg`,
-          `https://cdn.casio-vietnam.vn/wp-content/uploads/2026/04/z7714611433262_ac75daaedeb18455e68de7f256d2bcd2.jpg`,
-          `https://cdn.casio-vietnam.vn/wp-content/uploads/2026/04/z7714610835578_6feaa52beebf1ec4570987f94df8c193.jpg`,
-          `https://cdn.casio-vietnam.vn/wp-content/uploads/2026/04/z7714610985071_853f396232e4149a6d9ce0cd9ce497c2.jpg`
-        ],
+        image: gallery[0],
+        images: gallery,
         description: desc,
         fullDescription: `${desc}. Sản phẩm chính hãng Casio Nhật Bản với thiết kế hiện đại và độ bền cao.`,
         specs: {
-          size: "45 × 40 × 12 mm",
-          weight: "45 g",
-          caseMaterial: "Nhựa / Thép",
-          strapMaterial: "Dây nhựa / Kim loại",
-          waterResistance: "100 - 200 mét"
+          size: `${44 + (i % 4)} × ${39 + (i % 3)} × ${11 + (i % 3)} mm`,
+          weight: `${42 + (i % 18)} g`,
+          caseMaterial,
+          strapMaterial,
+          waterResistance
         },
-        features: ["Chống va đập", "Chống nước", "Đèn LED", "Lịch tự động"]
+        features
       };
     })
   ],

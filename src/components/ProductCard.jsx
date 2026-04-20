@@ -11,53 +11,55 @@ export default function ProductCard({ product }) {
   };
 
   return (
-    <div className="group bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-300 border border-gray-100 h-full flex flex-col">
-      {/* Hình ảnh sản phẩm */}
+    <div className="group site-card overflow-hidden h-full flex flex-col transition-transform duration-300 hover:-translate-y-1">
       <Link to={`/product/${product.id}`} className="block relative">
-        <div className="relative h-64 overflow-hidden bg-gray-50">
+        <div className="relative aspect-square overflow-hidden bg-[linear-gradient(180deg,#ffffff,#f3f4f6)]">
           <img
             src={product.image}
             alt={product.name}
-            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+            className="w-full h-full object-contain p-5 transition-transform duration-500 group-hover:scale-[1.04]"
           />
 
-          {/* Badge loại sản phẩm */}
-          <div className="absolute top-4 left-4 bg-black/90 text-white text-xs font-medium px-3.5 py-1 rounded-full backdrop-blur-sm">
+          <div className="absolute top-4 left-4 site-chip bg-white/92 text-[var(--color-text-primary)] shadow-sm">
             {product.category}
           </div>
 
-          {/* Nút yêu thích */}
           <button
+            type="button"
             onClick={handleLike}
-            className="absolute top-4 right-4 p-2.5 bg-white rounded-full shadow-md hover:bg-gray-100 transition-all active:scale-90"
+            aria-pressed={isLiked}
+            aria-label={
+              isLiked ? "Bỏ yêu thích sản phẩm" : "Yêu thích sản phẩm"
+            }
+            className="absolute top-4 right-4 inline-flex h-11 w-11 items-center justify-center rounded-full border border-[var(--color-border-strong)] bg-white/95 text-[var(--color-text-primary)] shadow-sm transition-all hover:bg-[rgba(221,51,51,0.08)] active:scale-95"
           >
             <Heart
               size={20}
-              className={`transition-colors ${isLiked ? "fill-red-500 text-red-500" : "text-gray-600"}`}
+              className={`transition-colors ${isLiked ? "fill-[var(--color-surface-raised)] text-[var(--color-surface-raised)]" : "text-[var(--color-text-secondary)]"}`}
             />
           </button>
         </div>
       </Link>
 
-      {/* Thông tin sản phẩm */}
-      <div className="p-6 flex flex-col flex-1">
+      <div className="flex flex-1 flex-col p-5 sm:p-6">
         <Link to={`/product/${product.id}`} className="flex-1">
-          <h3 className="font-semibold text-xl leading-tight mb-3 line-clamp-2 hover:text-yellow-600 transition-colors">
+          <h3 className="site-title text-lg sm:text-xl mb-2 line-clamp-2 group-hover:text-[var(--color-surface-raised)] transition-colors">
             {product.name}
           </h3>
 
-          <p className="text-gray-500 text-sm mb-6 line-clamp-2">
+          <p className="site-copy text-sm mb-5 line-clamp-2">
             {product.description}
           </p>
         </Link>
 
-        {/* Phần giá - Đã chỉnh lại cho đẹp hơn */}
-        <div className="mt-auto pt-4 border-t border-gray-100">
+        <div className="mt-auto pt-4 border-t border-[var(--color-border-strong)]">
           <div className="flex items-baseline gap-1">
-            <span className="text-2xl font-bold tracking-tight text-red-600">
+            <span className="text-2xl font-bold tracking-tight text-[var(--color-surface-base)]">
               {product.price.toLocaleString("vi-VN")}
             </span>
-            <span className="text-2xl font-medium text-red-600">₫</span>
+            <span className="text-2xl font-medium text-[var(--color-surface-raised)]">
+              ₫
+            </span>
           </div>
         </div>
       </div>

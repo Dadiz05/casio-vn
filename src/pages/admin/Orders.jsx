@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Eye, CheckCircle, XCircle } from "lucide-react";
 
 export default function AdminOrders() {
-  // Dữ liệu demo đơn hàng (không dùng cart nữa)
   const [orders, setOrders] = useState([
     {
       id: "ORD001",
@@ -49,13 +48,13 @@ export default function AdminOrders() {
   const getStatusColor = (status) => {
     switch (status) {
       case "completed":
-        return "bg-green-100 text-green-700";
+        return "bg-[rgba(34,197,94,0.15)] text-green-700";
       case "pending":
-        return "bg-yellow-100 text-yellow-700";
+        return "bg-[rgba(245,158,11,0.16)] text-amber-700";
       case "cancelled":
-        return "bg-red-100 text-red-700";
+        return "bg-[rgba(221,51,51,0.14)] text-[var(--color-surface-raised)]";
       default:
-        return "bg-gray-100 text-gray-700";
+        return "bg-[rgba(16,4,4,0.08)] text-[var(--color-text-secondary)]";
     }
   };
 
@@ -73,132 +72,158 @@ export default function AdminOrders() {
   };
 
   return (
-    <div className="p-8 max-w-7xl mx-auto">
-      <div className="flex justify-between items-center mb-10">
+    <div className="casio-container casio-section py-10">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-4xl font-bold">Quản lý Đơn hàng</h1>
-          <p className="text-gray-600 mt-2">
+          <span className="site-kicker">Admin orders</span>
+          <h1 className="site-title text-3xl sm:text-4xl mt-2">
+            Quản lý Đơn hàng
+          </h1>
+          <p className="site-copy mt-2">
             Theo dõi và cập nhật trạng thái đơn hàng
           </p>
         </div>
-        <div className="text-sm text-gray-500">
+        <div className="site-chip text-sm">
           Tổng đơn hàng:{" "}
-          <span className="font-semibold text-black">{orders.length}</span>
+          <span className="font-semibold text-[var(--color-text-primary)]">
+            {orders.length}
+          </span>
         </div>
       </div>
 
-      <div className="bg-white rounded-3xl shadow-sm overflow-hidden">
-        <table className="w-full">
-          <thead className="bg-gray-50 border-b">
-            <tr>
-              <th className="text-left p-6 font-semibold">Mã đơn hàng</th>
-              <th className="text-left p-6 font-semibold">Khách hàng</th>
-              <th className="text-left p-6 font-semibold">Ngày đặt</th>
-              <th className="text-right p-6 font-semibold">Tổng tiền</th>
-              <th className="text-center p-6 font-semibold">Trạng thái</th>
-              <th className="text-center p-6 font-semibold">Hành động</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y">
-            {orders.map((order) => (
-              <tr key={order.id} className="hover:bg-gray-50">
-                <td className="p-6 font-mono font-medium">{order.id}</td>
-                <td className="p-6">
-                  <div>
-                    <p className="font-medium">{order.customer}</p>
-                    <p className="text-sm text-gray-500">{order.email}</p>
-                  </div>
-                </td>
-                <td className="p-6 text-gray-600">{order.date}</td>
-                <td className="p-6 text-right font-semibold">
-                  {order.total.toLocaleString("vi-VN")} ₫
-                </td>
-                <td className="p-6">
-                  <span
-                    className={`inline-block px-4 py-1.5 rounded-full text-sm font-medium ${getStatusColor(order.status)}`}
-                  >
-                    {getStatusText(order.status)}
-                  </span>
-                </td>
-                <td className="p-6">
-                  <div className="flex justify-center gap-3">
-                    <button
-                      onClick={() => setSelectedOrder(order)}
-                      className="p-2 text-blue-600 hover:bg-blue-50 rounded-xl transition"
-                      title="Xem chi tiết"
-                    >
-                      <Eye size={20} />
-                    </button>
-
-                    {order.status === "pending" && (
-                      <>
-                        <button
-                          onClick={() =>
-                            updateOrderStatus(order.id, "completed")
-                          }
-                          className="p-2 text-green-600 hover:bg-green-50 rounded-xl transition"
-                          title="Xác nhận"
-                        >
-                          <CheckCircle size={20} />
-                        </button>
-                        <button
-                          onClick={() =>
-                            updateOrderStatus(order.id, "cancelled")
-                          }
-                          className="p-2 text-red-600 hover:bg-red-50 rounded-xl transition"
-                          title="Hủy"
-                        >
-                          <XCircle size={20} />
-                        </button>
-                      </>
-                    )}
-                  </div>
-                </td>
+      <div className="site-card overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[900px]">
+            <thead className="bg-[rgba(16,4,4,0.04)] border-b border-[var(--color-border-strong)]">
+              <tr>
+                <th className="text-left p-5 font-semibold">Mã đơn hàng</th>
+                <th className="text-left p-5 font-semibold">Khách hàng</th>
+                <th className="text-left p-5 font-semibold">Ngày đặt</th>
+                <th className="text-right p-5 font-semibold">Tổng tiền</th>
+                <th className="text-center p-5 font-semibold">Trạng thái</th>
+                <th className="text-center p-5 font-semibold">Hành động</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {orders.map((order) => (
+                <tr
+                  key={order.id}
+                  className="border-t border-[var(--color-border-strong)] hover:bg-[rgba(16,4,4,0.02)]"
+                >
+                  <td className="p-5 font-mono font-medium">{order.id}</td>
+                  <td className="p-5">
+                    <p className="font-medium text-[var(--color-text-primary)]">
+                      {order.customer}
+                    </p>
+                    <p className="text-sm text-[var(--color-text-secondary)]">
+                      {order.email}
+                    </p>
+                  </td>
+                  <td className="p-5 text-[var(--color-text-secondary)]">
+                    {order.date}
+                  </td>
+                  <td className="p-5 text-right font-semibold">
+                    {order.total.toLocaleString("vi-VN")} ₫
+                  </td>
+                  <td className="p-5 text-center">
+                    <span
+                      className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(order.status)}`}
+                    >
+                      {getStatusText(order.status)}
+                    </span>
+                  </td>
+                  <td className="p-5">
+                    <div className="flex justify-center gap-2">
+                      <button
+                        onClick={() => setSelectedOrder(order)}
+                        className="site-button site-button--ghost min-h-10 px-3 py-2"
+                        title="Xem chi tiết"
+                      >
+                        <Eye size={16} />
+                      </button>
+
+                      {order.status === "pending" && (
+                        <>
+                          <button
+                            onClick={() =>
+                              updateOrderStatus(order.id, "completed")
+                            }
+                            className="site-button site-button--ghost min-h-10 px-3 py-2 text-green-700"
+                            title="Xác nhận"
+                          >
+                            <CheckCircle size={16} />
+                          </button>
+                          <button
+                            onClick={() =>
+                              updateOrderStatus(order.id, "cancelled")
+                            }
+                            className="site-button site-button--ghost min-h-10 px-3 py-2 text-[var(--color-surface-raised)]"
+                            title="Hủy"
+                          >
+                            <XCircle size={16} />
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
-      {/* Modal chi tiết đơn hàng */}
       {selectedOrder && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-          <div className="bg-white rounded-3xl max-w-2xl w-full mx-4 overflow-hidden">
-            <div className="p-8 border-b flex justify-between items-center">
+        <div
+          className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 px-4"
+          role="dialog"
+          aria-modal="true"
+        >
+          <div className="site-card max-w-2xl w-full overflow-hidden">
+            <div className="p-6 sm:p-8 border-b border-[var(--color-border-strong)] flex items-center justify-between gap-4">
               <div>
-                <h2 className="text-2xl font-bold">Chi tiết đơn hàng</h2>
-                <p className="text-gray-500">Mã đơn: {selectedOrder.id}</p>
+                <h2 className="text-2xl font-bold text-[var(--color-text-primary)]">
+                  Chi tiết đơn hàng
+                </h2>
+                <p className="site-copy">Mã đơn: {selectedOrder.id}</p>
               </div>
               <button
                 onClick={() => setSelectedOrder(null)}
-                className="text-gray-400 hover:text-black text-3xl leading-none"
+                className="site-button site-button--ghost min-h-10 px-3 py-2"
+                aria-label="Đóng chi tiết đơn hàng"
               >
                 ×
               </button>
             </div>
 
-            <div className="p-8">
-              <div className="grid grid-cols-2 gap-6 mb-8">
+            <div className="p-6 sm:p-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-6">
                 <div>
-                  <p className="text-gray-500 text-sm">Khách hàng</p>
+                  <p className="text-sm text-[var(--color-text-secondary)]">
+                    Khách hàng
+                  </p>
                   <p className="font-medium">{selectedOrder.customer}</p>
                 </div>
                 <div>
-                  <p className="text-gray-500 text-sm">Ngày đặt hàng</p>
+                  <p className="text-sm text-[var(--color-text-secondary)]">
+                    Ngày đặt hàng
+                  </p>
                   <p className="font-medium">{selectedOrder.date}</p>
                 </div>
               </div>
 
-              <h3 className="font-semibold mb-4">Danh sách sản phẩm</h3>
-              <div className="space-y-4 mb-8">
+              <h3 className="font-semibold mb-4 text-[var(--color-text-primary)]">
+                Danh sách sản phẩm
+              </h3>
+              <div className="space-y-3 mb-6">
                 {selectedOrder.items.map((item, index) => (
                   <div
-                    key={index}
-                    className="flex justify-between items-center py-3 border-b"
+                    key={`${selectedOrder.id}-${index}`}
+                    className="flex items-center justify-between py-3 border-b border-[var(--color-border-strong)]"
                   >
                     <div>
                       <p className="font-medium">{item.name}</p>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-[var(--color-text-secondary)]">
                         Số lượng: {item.quantity}
                       </p>
                     </div>
@@ -209,18 +234,18 @@ export default function AdminOrders() {
                 ))}
               </div>
 
-              <div className="flex justify-between text-xl font-bold pt-4 border-t">
+              <div className="flex justify-between text-xl font-bold pt-4 border-t border-[var(--color-border-strong)]">
                 <span>Tổng thanh toán</span>
-                <span className="text-red-600">
+                <span className="text-[var(--color-surface-raised)]">
                   {selectedOrder.total.toLocaleString("vi-VN")} ₫
                 </span>
               </div>
             </div>
 
-            <div className="p-6 border-t bg-gray-50 flex gap-4">
+            <div className="p-5 border-t border-[var(--color-border-strong)] bg-[rgba(16,4,4,0.03)]">
               <button
                 onClick={() => setSelectedOrder(null)}
-                className="flex-1 py-4 border border-gray-300 rounded-2xl font-medium"
+                className="site-button site-button--secondary w-full"
               >
                 Đóng
               </button>

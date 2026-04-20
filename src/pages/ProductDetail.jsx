@@ -1,4 +1,4 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { useStore } from "../store/useStore.js";
 import {
   ArrowLeft,
@@ -10,6 +10,7 @@ import { useState, useEffect } from "react";
 
 export default function ProductDetail() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { products, addToCart } = useStore();
 
   const product = products.find((p) => p.id === id);
@@ -19,21 +20,16 @@ export default function ProductDetail() {
 
   // === TỰ ĐỘNG CUỘN LÊN ĐẦU TRANG KHI VÀO CHI TIẾT SẢN PHẨM ===
   useEffect(() => {
-    window.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: "instant", // "instant" = nhảy thẳng, không cuộn
-    });
+    window.scrollTo(0, 0);
   }, [id]);
 
   if (!product) {
     return (
-      <div className="max-w-7xl mx-auto px-6 py-20 text-center">
-        <h2 className="text-3xl font-bold">Không tìm thấy sản phẩm</h2>
-        <Link
-          to="/shop"
-          className="text-blue-600 hover:underline mt-4 inline-block"
-        >
+      <div className="casio-container casio-section py-20 text-center">
+        <h2 className="site-title text-3xl sm:text-4xl">
+          Không tìm thấy sản phẩm
+        </h2>
+        <Link to="/shop" className="site-button site-button--ghost mt-5">
           Quay lại cửa hàng
         </Link>
       </div>
@@ -66,37 +62,35 @@ export default function ProductDetail() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-12">
-      {/* Phần còn lại giữ nguyên như code trước đó của bạn */}
+    <div className="casio-container casio-section py-12">
       <Link
         to="/shop"
-        className="inline-flex items-center gap-2 text-gray-600 hover:text-black mb-8"
+        className="inline-flex items-center gap-2 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] mb-8"
       >
         <ArrowLeft size={20} />
         Quay lại cửa hàng
       </Link>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-        {/* Phần ảnh sản phẩm */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 xl:gap-12">
         <div>
-          <div className="relative bg-white rounded-3xl overflow-hidden shadow-sm mb-6 group">
+          <div className="site-card relative overflow-hidden mb-6 group">
             <img
               src={images[currentImageIndex]}
               alt={product.name}
-              className="w-full h-auto object-cover aspect-square"
+              className="w-full h-auto object-contain aspect-square p-6 bg-[linear-gradient(180deg,#fff,#f5f5f5)]"
             />
 
             {images.length > 1 && (
               <>
                 <button
                   onClick={handlePrevImage}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-3 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-all"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 site-button site-button--secondary opacity-0 group-hover:opacity-100 transition-all px-3 py-3"
                 >
                   <ChevronLeft size={28} />
                 </button>
                 <button
                   onClick={handleNextImage}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-3 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-all"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 site-button site-button--secondary opacity-0 group-hover:opacity-100 transition-all px-3 py-3"
                 >
                   <ChevronRight size={28} />
                 </button>
@@ -110,10 +104,10 @@ export default function ProductDetail() {
                 <div
                   key={index}
                   onClick={() => handleThumbnailClick(index)}
-                  className={`flex-shrink-0 w-20 h-20 bg-gray-100 rounded-2xl overflow-hidden border-2 cursor-pointer transition-all hover:scale-105 ${
+                  className={`flex-shrink-0 w-20 h-20 bg-white rounded-[var(--radius-sm)] overflow-hidden border-2 cursor-pointer transition-all hover:scale-105 ${
                     currentImageIndex === index
-                      ? "border-black scale-105"
-                      : "border-transparent"
+                      ? "border-[var(--color-surface-raised)] scale-105"
+                      : "border-[var(--color-border-strong)]"
                   }`}
                 >
                   <img
@@ -127,22 +121,22 @@ export default function ProductDetail() {
           )}
         </div>
 
-        {/* Phần thông tin sản phẩm */}
         <div>
           <div className="flex items-center gap-3 mb-3">
-            <span className="bg-red-600 text-white text-xs font-medium px-3 py-1 rounded-full">
+            <span className="site-chip bg-[var(--color-surface-raised)] text-white border-transparent">
               New
             </span>
-            <span className="text-sm text-gray-500">{product.category}</span>
+            <span className="text-sm text-[var(--color-text-secondary)]">
+              {product.category}
+            </span>
           </div>
 
-          <h1 className="text-3xl font-bold leading-tight mb-4">
+          <h1 className="site-title text-3xl sm:text-4xl leading-tight mb-4">
             {product.name}
           </h1>
 
-          {/* Chọn màu */}
           <div className="mb-6">
-            <p className="text-sm text-gray-600 mb-2">
+            <p className="text-sm text-[var(--color-text-secondary)] mb-2">
               Bạn đang xem{" "}
               <span className="font-semibold text-black">{selectedColor}</span>
             </p>
@@ -164,41 +158,45 @@ export default function ProductDetail() {
           </div>
 
           <div className="flex items-center gap-4 mb-6">
-            <div className="text-4xl font-bold text-red-600">
+            <div className="text-3xl sm:text-4xl font-bold text-[var(--color-accent)]">
               {product.price.toLocaleString("vi-VN")} ₫
             </div>
           </div>
 
-          <p className="text-gray-700 leading-relaxed mb-8">
+          <p className="text-[var(--color-text-primary)] leading-relaxed mb-8">
             {product.description}
           </p>
 
           {/* Phần thông tin chính hãng, fullbox, khuyến mãi... (giữ nguyên như trước) */}
           <div className="space-y-6 mb-8 text-sm">
-            <div>
-              <p className="font-medium text-green-700">
-                Sản phẩm 100% chính hãng CASIO Nhật Bản, bảo hành chính hãng
+            <div className="space-y-2">
+              <p className="font-medium text-[var(--color-success)] flex items-center gap-2">
+                <span className="text-lg">✓</span> Sản phẩm 100% chính hãng
+                CASIO Nhật Bản, bảo hành chính hãng
               </p>
-              <p className="text-red-600 font-medium">
-                Hoàn tiền gấp 10 lần nếu phát hiện hàng giả, hàng nhái
+              <p className="text-[var(--color-error)] font-medium flex items-center gap-2">
+                <span className="text-lg">⚠</span> Hoàn tiền gấp 10 lần nếu phát
+                hiện hàng giả, hàng nhái
               </p>
             </div>
 
-            <div>
-              <p className="font-medium">Chấp nhận thanh toán:</p>
-              <p className="text-gray-600">
+            <div className="bg-[var(--color-surface-muted)] p-4 rounded-lg space-y-2">
+              <p className="font-medium text-[var(--color-text-primary)]">
+                Chấp nhận thanh toán:
+              </p>
+              <p className="text-[var(--color-text-secondary)]">
                 Thẻ ATM, VISA, Master Card, Airpay & QR-Code
               </p>
-              <p className="text-gray-600">
+              <p className="text-[var(--color-text-secondary)]">
                 Trả góp qua thẻ, Kredivo, HomePay, Credit, CCCD
               </p>
             </div>
 
-            <div>
-              <p className="font-medium">
+            <div className="bg-[var(--color-surface-muted)] p-4 rounded-lg">
+              <p className="font-medium text-[var(--color-text-primary)] mb-3">
                 Bộ sản phẩm fullbox chính hãng bao gồm:
               </p>
-              <ul className="list-disc list-inside text-gray-600 mt-1 space-y-1">
+              <ul className="list-disc list-inside text-[var(--color-text-secondary)] space-y-1">
                 <li>
                   Túi, hộp, thẻ bảo hành, bảo hành điện tử, xuất hoá đơn eVAT
                 </li>
@@ -245,37 +243,45 @@ export default function ProductDetail() {
           </div>
 
           {/* Chọn số lượng + Nút */}
-          <div className="flex items-center gap-6 mb-8">
-            <span className="font-medium text-gray-700">Số lượng:</span>
-            <div className="flex items-center border border-gray-300 rounded-2xl">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 mb-8">
+            <span className="font-medium text-[var(--color-text-primary)]">
+              Số lượng:
+            </span>
+            <div className="flex items-center border border-[var(--color-border-strong)] rounded-lg bg-[var(--color-surface-muted)]">
               <button
                 onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                className="px-6 py-3 hover:bg-gray-100 rounded-l-2xl"
+                className="px-4 sm:px-6 py-2 sm:py-3 hover:bg-[var(--color-surface-raised)] rounded-l-lg transition"
               >
                 −
               </button>
-              <span className="px-10 py-3 font-semibold text-lg">
+              <span className="px-6 sm:px-10 py-2 sm:py-3 font-semibold text-lg text-[var(--color-text-primary)]">
                 {quantity}
               </span>
               <button
                 onClick={() => setQuantity((q) => q + 1)}
-                className="px-6 py-3 hover:bg-gray-100 rounded-r-2xl"
+                className="px-4 sm:px-6 py-2 sm:py-3 hover:bg-[var(--color-surface-raised)] rounded-r-lg transition"
               >
                 +
               </button>
             </div>
           </div>
 
-          <div className="flex gap-4">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
             <button
               onClick={handleAddToCart}
-              className="flex-1 bg-black hover:bg-yellow-400 hover:text-black text-white py-4 rounded-2xl font-semibold transition flex items-center justify-center gap-3"
+              className="site-button site-button--primary flex items-center justify-center gap-3 flex-1 py-4 sm:py-5"
             >
               <ShoppingCart size={22} />
               Thêm vào giỏ hàng
             </button>
 
-            <button className="flex-1 border-2 border-black text-black py-4 rounded-2xl font-semibold hover:bg-gray-50 transition">
+            <button
+              onClick={() => {
+                handleAddToCart();
+                navigate("/cart");
+              }}
+              className="site-button site-button--secondary flex-1 py-4 sm:py-5 font-semibold"
+            >
               Mua ngay
             </button>
           </div>
@@ -284,21 +290,24 @@ export default function ProductDetail() {
 
       {/* Phần mô tả + specs + features bên dưới (giữ nguyên) */}
       <div className="mt-16">
-        <div className="border-b pb-4 mb-8">
-          <h2 className="text-2xl font-semibold">Mô tả sản phẩm</h2>
+        <div className="border-b border-[var(--color-border-strong)] pb-4 mb-8">
+          <h2 className="site-title text-2xl">Mô tả sản phẩm</h2>
         </div>
 
-        <div className="prose max-w-none text-gray-700 leading-relaxed mb-12">
+        <div className="max-w-none text-[var(--color-text-primary)] leading-relaxed mb-12 space-y-4">
           <p>{product.fullDescription}</p>
         </div>
 
         {product.specs && (
           <div className="mb-12">
-            <h3 className="text-xl font-semibold mb-6">Thông tin cơ bản</h3>
+            <h3 className="site-title text-xl mb-6">Thông tin cơ bản</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {Object.entries(product.specs).map(([key, value]) => (
-                <div key={key} className="flex justify-between py-3 border-b">
-                  <span className="text-gray-600">
+                <div
+                  key={key}
+                  className="flex justify-between py-3 border-b border-[var(--color-border-strong)]"
+                >
+                  <span className="text-[var(--color-text-secondary)]">
                     {key === "size"
                       ? "Kích thước vỏ (Dài × Rộng × Cao)"
                       : key === "weight"
@@ -313,7 +322,9 @@ export default function ProductDetail() {
                                 ? "Tuổi thọ pin"
                                 : key}
                   </span>
-                  <span className="font-medium text-right">{value}</span>
+                  <span className="font-medium text-[var(--color-text-primary)] text-right">
+                    {value}
+                  </span>
                 </div>
               ))}
             </div>
@@ -322,12 +333,16 @@ export default function ProductDetail() {
 
         {product.features && (
           <div>
-            <h3 className="text-xl font-semibold mb-6">Tính năng nổi bật</h3>
-            <ul className="space-y-4">
+            <h3 className="site-title text-xl mb-6">Tính năng nổi bật</h3>
+            <ul className="space-y-3">
               {product.features.map((feature, index) => (
-                <li key={index} className="flex gap-3">
-                  <span className="text-green-600 mt-0.5">✔</span>
-                  <span>{feature}</span>
+                <li key={index} className="flex gap-3 items-start">
+                  <span className="text-[var(--color-accent)] font-bold mt-0.5 flex-shrink-0">
+                    ✓
+                  </span>
+                  <span className="text-[var(--color-text-primary)]">
+                    {feature}
+                  </span>
                 </li>
               ))}
             </ul>

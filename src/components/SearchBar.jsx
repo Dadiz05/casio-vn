@@ -21,20 +21,26 @@ export default function SearchBar({ products = [] }) {
   const inputRef = useRef(null);
 
   // Filter products based on debounced query
-  const filteredProducts = debouncedQuery.trim().length > 0
-    ? products.filter((p) =>
-        p.name?.toLowerCase().includes(debouncedQuery.toLowerCase()) ||
-        p.sku?.toLowerCase().includes(debouncedQuery.toLowerCase())
-      ).slice(0, 8)
-    : [];
+  const filteredProducts =
+    debouncedQuery.trim().length > 0
+      ? products
+          .filter(
+            (p) =>
+              p.name?.toLowerCase().includes(debouncedQuery.toLowerCase()) ||
+              p.sku?.toLowerCase().includes(debouncedQuery.toLowerCase()),
+          )
+          .slice(0, 8)
+      : [];
 
-  const filteredCategories = debouncedQuery.trim().length > 0
-    ? CATEGORIES.filter((c) =>
-        c.label.toLowerCase().includes(debouncedQuery.toLowerCase())
-      )
-    : CATEGORIES;
+  const filteredCategories =
+    debouncedQuery.trim().length > 0
+      ? CATEGORIES.filter((c) =>
+          c.label.toLowerCase().includes(debouncedQuery.toLowerCase()),
+        )
+      : CATEGORIES;
 
-  const showDropdown = open && (debouncedQuery.length > 0 || filteredCategories.length > 0);
+  const showDropdown =
+    open && (debouncedQuery.length > 0 || filteredCategories.length > 0);
   const totalItems = filteredCategories.length + filteredProducts.length;
 
   // Close on outside click
@@ -66,7 +72,8 @@ export default function SearchBar({ products = [] }) {
         navigate(filteredCategories[activeIndex].path);
         setOpen(false);
       } else if (activeIndex >= filteredCategories.length) {
-        const product = filteredProducts[activeIndex - filteredCategories.length];
+        const product =
+          filteredProducts[activeIndex - filteredCategories.length];
         if (product) handleProductClick(product);
       } else {
         handleSearch();
@@ -94,12 +101,11 @@ export default function SearchBar({ products = [] }) {
     setQuery("");
   };
 
-  const formatPrice = (price) =>
-    price?.toLocaleString("vi-VN") + "đ";
+  const formatPrice = (price) => price?.toLocaleString("vi-VN") + "đ";
 
   return (
     <div className="searchbar-wrapper" ref={containerRef}>
-      <div className={`searchbar-input-row ${open ? "focused" : ""}`}>
+      <div className={`searchbar-input-row ${open ? "is-open" : ""}`}>
         <input
           ref={inputRef}
           type="text"
@@ -117,13 +123,24 @@ export default function SearchBar({ products = [] }) {
           aria-label="Tìm kiếm sản phẩm"
           aria-expanded={showDropdown}
           aria-haspopup="listbox"
+          aria-controls="casio-search-results"
         />
         <button
+          type="button"
           className="searchbar-btn"
           onClick={handleSearch}
           aria-label="Tìm kiếm"
         >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
             <circle cx="11" cy="11" r="8" />
             <line x1="21" y1="21" x2="16.65" y2="16.65" />
           </svg>
@@ -131,7 +148,11 @@ export default function SearchBar({ products = [] }) {
       </div>
 
       {showDropdown && (
-        <div className="searchbar-dropdown" role="listbox">
+        <div
+          className="searchbar-dropdown"
+          id="casio-search-results"
+          role="listbox"
+        >
           {/* Categories section */}
           {filteredCategories.length > 0 && (
             <div className="searchbar-section">
@@ -158,7 +179,9 @@ export default function SearchBar({ products = [] }) {
               <div className="searchbar-section-title">Sản phẩm</div>
               {filteredProducts.map((product, i) => {
                 const idx = filteredCategories.length + i;
-                const hasDiscount = product.originalPrice && product.originalPrice > product.price;
+                const hasDiscount =
+                  product.originalPrice &&
+                  product.originalPrice > product.price;
                 return (
                   <button
                     key={product._id || product.id}
@@ -173,7 +196,9 @@ export default function SearchBar({ products = [] }) {
                       alt={product.name}
                     />
                     <div className="searchbar-product-info">
-                      <div className="searchbar-product-name">{product.name}</div>
+                      <div className="searchbar-product-name">
+                        {product.name}
+                      </div>
                       <div className="searchbar-product-price">
                         {hasDiscount && (
                           <span className="searchbar-price-original">
@@ -192,18 +217,17 @@ export default function SearchBar({ products = [] }) {
           )}
 
           {/* No results */}
-          {debouncedQuery.trim().length > 0 && filteredProducts.length === 0 && filteredCategories.length === 0 && (
-            <div className="searchbar-no-results">
-              Không tìm thấy kết quả cho &ldquo;{debouncedQuery}&rdquo;
-            </div>
-          )}
+          {debouncedQuery.trim().length > 0 &&
+            filteredProducts.length === 0 &&
+            filteredCategories.length === 0 && (
+              <div className="searchbar-no-results">
+                Không tìm thấy kết quả cho &ldquo;{debouncedQuery}&rdquo;
+              </div>
+            )}
 
           {/* View all results link */}
           {debouncedQuery.trim().length > 0 && filteredProducts.length > 0 && (
-            <button
-              className="searchbar-view-all"
-              onMouseDown={handleSearch}
-            >
+            <button className="searchbar-view-all" onMouseDown={handleSearch}>
               Xem tất cả kết quả cho &ldquo;{query}&rdquo;
             </button>
           )}

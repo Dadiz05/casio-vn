@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useStore } from "../store/useStore.js";
 
@@ -14,6 +14,10 @@ export default function Register() {
 
   const { setUser } = useStore();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const handleChange = (e) => {
     setFormData({
@@ -58,18 +62,19 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-6">
-      <div className="max-w-md w-full bg-white rounded-3xl shadow-xl p-10">
+    <div className="casio-container casio-section min-h-[calc(100vh-4rem)] flex items-center justify-center py-12 px-6">
+      <div className="site-card w-full max-w-md p-7 sm:p-10">
         <div className="text-center mb-10">
-          <h1 className="text-3xl font-bold text-black">Đăng ký tài khoản</h1>
-          <p className="text-gray-600 mt-2">
-            Tạo tài khoản để mua sắm dễ dàng hơn
-          </p>
+          <span className="site-kicker justify-center">Tạo tài khoản</span>
+          <h1 className="site-title text-3xl sm:text-4xl mt-2">
+            Đăng ký tài khoản
+          </h1>
+          <p className="site-copy mt-2">Tạo tài khoản để mua sắm dễ dàng hơn</p>
         </div>
 
         <form onSubmit={handleRegister} className="space-y-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
               Họ và tên
             </label>
             <input
@@ -78,13 +83,13 @@ export default function Register() {
               value={formData.name}
               onChange={handleChange}
               placeholder="Nguyễn Văn A"
-              className="w-full px-5 py-4 border border-gray-300 rounded-2xl focus:outline-none focus:border-black"
+              className="site-field"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
               Email
             </label>
             <input
@@ -93,13 +98,13 @@ export default function Register() {
               value={formData.email}
               onChange={handleChange}
               placeholder="example@email.com"
-              className="w-full px-5 py-4 border border-gray-300 rounded-2xl focus:outline-none focus:border-black"
+              className="site-field"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
               Mật khẩu
             </label>
             <input
@@ -108,13 +113,13 @@ export default function Register() {
               value={formData.password}
               onChange={handleChange}
               placeholder="Nhập mật khẩu (ít nhất 6 ký tự)"
-              className="w-full px-5 py-4 border border-gray-300 rounded-2xl focus:outline-none focus:border-black"
+              className="site-field"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
               Xác nhận mật khẩu
             </label>
             <input
@@ -123,17 +128,21 @@ export default function Register() {
               value={formData.confirmPassword}
               onChange={handleChange}
               placeholder="Nhập lại mật khẩu"
-              className="w-full px-5 py-4 border border-gray-300 rounded-2xl focus:outline-none focus:border-black"
+              className="site-field"
               required
             />
           </div>
 
-          {error && <p className="text-red-600 text-sm text-center">{error}</p>}
+          {error && (
+            <p className="text-[var(--color-surface-raised)] text-sm text-center">
+              {error}
+            </p>
+          )}
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-black text-white py-4 rounded-2xl font-semibold text-lg hover:bg-gray-800 transition disabled:opacity-70"
+            className="site-button site-button--primary w-full"
           >
             {loading ? "Đang xử lý..." : "Đăng ký"}
           </button>

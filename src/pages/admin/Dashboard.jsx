@@ -1,16 +1,33 @@
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import { useStore } from "../../store/useStore.js";
 import { Users, ShoppingCart, DollarSign, TrendingUp } from "lucide-react";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
+
+const RevenueBarChart = lazy(
+  () => import("../../components/admin/RevenueBarChart.jsx"),
+);
 
 export default function AdminDashboard() {
   const { products, user } = useStore();
+  const [shouldLoadChart, setShouldLoadChart] = useState(false);
+  const chartCardRef = useRef(null);
+
+  useEffect(() => {
+    if (!chartCardRef.current || shouldLoadChart) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) {
+          setShouldLoadChart(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "180px" },
+    );
+
+    observer.observe(chartCardRef.current);
+    return () => observer.disconnect();
+  }, [shouldLoadChart]);
 
   // Dữ liệu giả cho biểu đồ
   const chartData = [
@@ -24,96 +41,120 @@ export default function AdminDashboard() {
   const totalRevenue = chartData.reduce((sum, item) => sum + item.revenue, 0);
   const totalOrders = 124;
   const totalUsers = 856;
+  const metricCards = [
+    {
+      label: "Tổng doanh thu",
+      value: `${(totalRevenue / 1000000).toFixed(0)} triệu ₫`,
+      icon: (
+        <DollarSign className="text-[var(--color-surface-raised)]" size={26} />
+      ),
+    },
+    {
+      label: "Số đơn hàng",
+      value: totalOrders,
+      icon: (
+        <ShoppingCart className="text-[var(--color-text-primary)]" size={26} />
+      ),
+    },
+    {
+      label: "Sản phẩm",
+      value: products.length,
+      icon: (
+        <TrendingUp className="text-[var(--color-text-secondary)]" size={26} />
+      ),
+    },
+    {
+      label: "Khách hàng",
+      value: totalUsers,
+      icon: <Users className="text-[var(--color-text-secondary)]" size={26} />,
+    },
+  ];
 
   return (
-    <div className="p-8 max-w-7xl mx-auto">
-      <div className="mb-10">
-        <h1 className="text-4xl font-bold">Admin Dashboard</h1>
-        <p className="text-gray-600 mt-2">
+    <div className="casio-container casio-section py-10">
+      <div className="mb-8">
+        <span className="site-kicker">Admin</span>
+        <h1 className="site-title text-3xl sm:text-4xl mt-2">Dashboard</h1>
+        <p className="site-copy mt-2">
           Chào mừng quay trở lại, {user?.name || "Admin"}
         </p>
       </div>
 
-      {/* Thống kê nhanh */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-        <div className="bg-white p-6 rounded-3xl shadow-sm">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-500 text-sm">Tổng doanh thu</p>
-              <p className="text-3xl font-bold mt-2">
-                {(totalRevenue / 1000000).toFixed(0)} triệu ₫
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 mb-8">
+        {metricCards.map((card) => (
+          <div key={card.label} className="site-card p-5 sm:p-6">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-sm text-[var(--color-text-secondary)]">
+                  {card.label}
+                </p>
+                <p className="text-2xl sm:text-3xl font-bold mt-2 text-[var(--color-text-primary)]">
+                  {card.value}
+                </p>
+              </div>
+              <div className="site-chip bg-[rgba(221,51,51,0.1)] border-[rgba(221,51,51,0.2)]">
+                {card.icon}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div ref={chartCardRef} className="site-card p-6 sm:p-8 mb-8">
+        <h2 className="text-2xl font-semibold mb-2 text-[var(--color-text-primary)]">
+          Doanh thu theo tháng
+        </h2>
+        <p className="site-copy mb-6">
+          Dữ liệu demo để kiểm tra bố cục dashboard và biểu đồ.
+        </p>
+        {shouldLoadChart ? (
+          <Suspense
+            fallback={
+              <div className="h-80 rounded-[var(--radius-sm)] border border-[var(--color-border-strong)] bg-[rgba(16,4,4,0.02)] grid place-items-center">
+                <p className="site-copy">Đang tải biểu đồ...</p>
+              </div>
+            }
+          >
+            <RevenueBarChart data={chartData} />
+          </Suspense>
+        ) : (
+          <div className="h-80 rounded-[var(--radius-sm)] border border-[var(--color-border-strong)] bg-[rgba(16,4,4,0.02)] grid place-items-center">
+            <div className="text-center px-6">
+              <p className="site-copy mb-4">
+                Biểu đồ sẽ tải khi bạn cuộn tới khu vực này hoặc bấm nút bên
+                dưới.
               </p>
+              <button
+                onClick={() => setShouldLoadChart(true)}
+                className="site-button site-button--secondary"
+              >
+                Tải biểu đồ ngay
+              </button>
             </div>
-            <DollarSign className="text-green-600" size={40} />
           </div>
-        </div>
-
-        <div className="bg-white p-6 rounded-3xl shadow-sm">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-500 text-sm">Số đơn hàng</p>
-              <p className="text-3xl font-bold mt-2">{totalOrders}</p>
-            </div>
-            <ShoppingCart className="text-blue-600" size={40} />
-          </div>
-        </div>
-
-        <div className="bg-white p-6 rounded-3xl shadow-sm">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-500 text-sm">Sản phẩm</p>
-              <p className="text-3xl font-bold mt-2">{products.length}</p>
-            </div>
-            <TrendingUp className="text-purple-600" size={40} />
-          </div>
-        </div>
-
-        <div className="bg-white p-6 rounded-3xl shadow-sm">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-500 text-sm">Khách hàng</p>
-              <p className="text-3xl font-bold mt-2">{totalUsers}</p>
-            </div>
-            <Users className="text-orange-600" size={40} />
-          </div>
-        </div>
+        )}
       </div>
 
-      {/* Biểu đồ doanh thu */}
-      <div className="bg-white p-8 rounded-3xl shadow-sm mb-10">
-        <h2 className="text-2xl font-semibold mb-6">Doanh thu theo tháng</h2>
-        <ResponsiveContainer width="100%" height={320}>
-          <BarChart data={chartData}>
-            <XAxis dataKey="month" />
-            <YAxis />
-            <Tooltip
-              formatter={(value) => [
-                `${value.toLocaleString("vi-VN")} ₫`,
-                "Doanh thu",
-              ]}
-            />
-            <Bar dataKey="revenue" fill="#111111" radius={8} />
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
-
-      {/* Link nhanh */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <a
-          href="/admin/products"
-          className="block p-8 bg-white rounded-3xl shadow-sm hover:shadow-md transition"
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <Link
+          to="/admin/products"
+          className="site-card p-6 sm:p-8 hover:-translate-y-0.5 transition"
         >
-          <h3 className="text-2xl font-semibold mb-2">Quản lý Sản phẩm</h3>
-          <p className="text-gray-600">Thêm, sửa, xóa sản phẩm đồng hồ Casio</p>
-        </a>
+          <h3 className="text-2xl font-semibold mb-2 text-[var(--color-text-primary)]">
+            Quản lý Sản phẩm
+          </h3>
+          <p className="site-copy">Thêm, sửa, xóa sản phẩm đồng hồ Casio</p>
+        </Link>
 
-        <a
-          href="/admin/orders"
-          className="block p-8 bg-white rounded-3xl shadow-sm hover:shadow-md transition"
+        <Link
+          to="/admin/orders"
+          className="site-card p-6 sm:p-8 hover:-translate-y-0.5 transition"
         >
-          <h3 className="text-2xl font-semibold mb-2">Quản lý Đơn hàng</h3>
-          <p className="text-gray-600">Xem và cập nhật trạng thái đơn hàng</p>
-        </a>
+          <h3 className="text-2xl font-semibold mb-2 text-[var(--color-text-primary)]">
+            Quản lý Đơn hàng
+          </h3>
+          <p className="site-copy">Xem và cập nhật trạng thái đơn hàng</p>
+        </Link>
       </div>
     </div>
   );

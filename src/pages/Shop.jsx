@@ -1,18 +1,22 @@
-import { useState, useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import ProductCard from "../components/ProductCard.jsx";
 import { useStore } from "../store/useStore.js";
-import { ChevronLeft, ChevronRight, X } from "lucide-react";
 
 export default function Shop() {
   const { products } = useStore();
+  const { search } = useLocation();
+  const navigate = useNavigate();
+  const searchParams = useMemo(() => new URLSearchParams(search), [search]);
 
-  const [selectedCategory, setSelectedCategory] = useState("all");
+  const selectedCategory = searchParams.get("category") || "all";
+  const searchQuery = searchParams.get("search") || "";
   const [priceRange, setPriceRange] = useState("all");
   const [waterResistance, setWaterResistance] = useState("all");
   const [caseMaterial, setCaseMaterial] = useState("all");
   const [strapMaterial, setStrapMaterial] = useState("all");
   const [sortBy, setSortBy] = useState("default");
-
   const [currentPage, setCurrentPage] = useState(1);
 
   const PRODUCTS_PER_PAGE = 20;
@@ -21,35 +25,52 @@ export default function Shop() {
     let result = [...products];
 
     if (selectedCategory !== "all") {
-      result = result.filter((p) => p.category === selectedCategory);
+      result = result.filter(
+        (product) => product.category === selectedCategory,
+      );
+    }
+
+    const normalizedSearchQuery = searchQuery.trim().toLowerCase();
+    if (normalizedSearchQuery) {
+      result = result.filter((product) => {
+        const name = product.name?.toLowerCase() || "";
+        const description = product.description?.toLowerCase() || "";
+        const category = product.category?.toLowerCase() || "";
+
+        return (
+          name.includes(normalizedSearchQuery) ||
+          description.includes(normalizedSearchQuery) ||
+          category.includes(normalizedSearchQuery)
+        );
+      });
     }
 
     if (priceRange !== "all") {
       const [min, max] = priceRange.split("-").map(Number);
-      result = result.filter((p) => {
-        if (max) return p.price >= min && p.price <= max;
-        return p.price >= min;
+      result = result.filter((product) => {
+        if (max) return product.price >= min && product.price <= max;
+        return product.price >= min;
       });
     }
 
     if (waterResistance !== "all") {
-      result = result.filter((p) => {
-        const wr = p.specs?.waterResistance || "";
-        return wr.toLowerCase().includes(waterResistance.toLowerCase());
+      result = result.filter((product) => {
+        const value = product.specs?.waterResistance || "";
+        return value.toLowerCase().includes(waterResistance.toLowerCase());
       });
     }
 
     if (caseMaterial !== "all") {
-      result = result.filter((p) => {
-        const cm = p.specs?.caseMaterial || "";
-        return cm.toLowerCase().includes(caseMaterial.toLowerCase());
+      result = result.filter((product) => {
+        const value = product.specs?.caseMaterial || "";
+        return value.toLowerCase().includes(caseMaterial.toLowerCase());
       });
     }
 
     if (strapMaterial !== "all") {
-      result = result.filter((p) => {
-        const sm = p.specs?.strapMaterial || "";
-        return sm.toLowerCase().includes(strapMaterial.toLowerCase());
+      result = result.filter((product) => {
+        const value = product.specs?.strapMaterial || "";
+        return value.toLowerCase().includes(strapMaterial.toLowerCase());
       });
     }
 
@@ -64,6 +85,7 @@ export default function Shop() {
   }, [
     products,
     selectedCategory,
+    searchQuery,
     priceRange,
     waterResistance,
     caseMaterial,
@@ -71,19 +93,51 @@ export default function Shop() {
     sortBy,
   ]);
 
-  const totalPages = Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE);
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE),
+  );
   const currentProducts = filteredProducts.slice(
     (currentPage - 1) * PRODUCTS_PER_PAGE,
     currentPage * PRODUCTS_PER_PAGE,
   );
 
-  const handleFilterChange = (setter) => (e) => {
-    setter(e.target.value);
+  // Scroll to top when filters or pagination change
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [
+    selectedCategory,
+    searchQuery,
+    priceRange,
+    waterResistance,
+    caseMaterial,
+    strapMaterial,
+    sortBy,
+    currentPage,
+  ]);
+
+  const handleCategoryChange = (event) => {
+    const params = new URLSearchParams(search);
+    if (event.target.value === "all") {
+      params.delete("category");
+    } else {
+      params.set("category", event.target.value);
+    }
+
+    navigate({
+      pathname: "/shop",
+      search: params.toString() ? `?${params.toString()}` : "",
+    });
+    setCurrentPage(1);
+  };
+
+  const handleFilterChange = (setter) => (event) => {
+    setter(event.target.value);
     setCurrentPage(1);
   };
 
   const resetFilters = () => {
-    setSelectedCategory("all");
+    navigate("/shop");
     setPriceRange("all");
     setWaterResistance("all");
     setCaseMaterial("all");
@@ -93,28 +147,36 @@ export default function Shop() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-10">
-      <div className="mb-10 text-center">
-        <h1 className="text-4xl font-bold mb-2">Cửa Hàng Casio</h1>
-        <p className="text-gray-600">
+    <div className="casio-container casio-section py-10">
+      <div className="mb-8 text-center max-w-2xl mx-auto">
+        <span className="site-kicker justify-center">Danh mục sản phẩm</span>
+        <h1 className="site-title text-3xl sm:text-4xl mt-3 mb-3">
+          Cửa Hàng Casio
+        </h1>
+        <p className="site-copy">
           Khám phá bộ sưu tập đồng hồ Casio chính hãng
         </p>
+        {searchQuery.trim() && (
+          <p className="mt-3 text-sm text-[var(--color-text-secondary)]">
+            Kết quả cho:{" "}
+            <span className="font-medium text-[var(--color-text-primary)]">
+              {searchQuery}
+            </span>
+          </p>
+        )}
       </div>
 
-      {/* Bộ lọc - Tất cả nằm cùng hàng, nút xóa bên phải */}
-      <div className="bg-white p-8 rounded-3xl shadow-sm mb-12">
-        <div className="flex flex-wrap items-end gap-6 lg:gap-8">
-          {/* Các bộ lọc chính */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 flex-1 gap-6">
-            {/* Dòng sản phẩm */}
+      <div className="site-card p-5 sm:p-7 mb-10">
+        <div className="flex flex-col sm:flex-wrap sm:items-end gap-5 lg:gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 flex-1 gap-3 sm:gap-4 w-full">
             <div>
-              <div className="text-sm font-medium text-gray-700 mb-2">
+              <div className="text-sm font-medium text-[var(--color-text-secondary)] mb-2">
                 Dòng sản phẩm
               </div>
               <select
                 value={selectedCategory}
-                onChange={handleFilterChange(setSelectedCategory)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:border-black bg-white text-sm"
+                onChange={handleCategoryChange}
+                className="site-select text-sm"
               >
                 <option value="all">Tất cả</option>
                 <option value="G-Shock">G-Shock</option>
@@ -124,15 +186,14 @@ export default function Shop() {
               </select>
             </div>
 
-            {/* Khoảng giá */}
             <div>
-              <div className="text-sm font-medium text-gray-700 mb-2">
+              <div className="text-sm font-medium text-[var(--color-text-secondary)] mb-2">
                 Khoảng giá
               </div>
               <select
                 value={priceRange}
                 onChange={handleFilterChange(setPriceRange)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:border-black bg-white text-sm"
+                className="site-select text-sm"
               >
                 <option value="all">Giá từ</option>
                 <option value="0-1000000">Dưới 1 triệu</option>
@@ -143,15 +204,14 @@ export default function Shop() {
               </select>
             </div>
 
-            {/* Chống nước */}
             <div>
-              <div className="text-sm font-medium text-gray-700 mb-2">
+              <div className="text-sm font-medium text-[var(--color-text-secondary)] mb-2">
                 Chống nước
               </div>
               <select
                 value={waterResistance}
                 onChange={handleFilterChange(setWaterResistance)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:border-black bg-white text-sm"
+                className="site-select text-sm"
               >
                 <option value="all">Tất cả</option>
                 <option value="100">100 mét</option>
@@ -159,15 +219,14 @@ export default function Shop() {
               </select>
             </div>
 
-            {/* Vật liệu vỏ */}
             <div>
-              <div className="text-sm font-medium text-gray-700 mb-2">
+              <div className="text-sm font-medium text-[var(--color-text-secondary)] mb-2">
                 Vật liệu vỏ
               </div>
               <select
                 value={caseMaterial}
                 onChange={handleFilterChange(setCaseMaterial)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:border-black bg-white text-sm"
+                className="site-select text-sm"
               >
                 <option value="all">Tất cả</option>
                 <option value="nhựa">Nhựa</option>
@@ -175,15 +234,14 @@ export default function Shop() {
               </select>
             </div>
 
-            {/* Dây đeo */}
             <div>
-              <div className="text-sm font-medium text-gray-700 mb-2">
+              <div className="text-sm font-medium text-[var(--color-text-secondary)] mb-2">
                 Dây đeo
               </div>
               <select
                 value={strapMaterial}
                 onChange={handleFilterChange(setStrapMaterial)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:border-black bg-white text-sm"
+                className="site-select text-sm"
               >
                 <option value="all">Tất cả</option>
                 <option value="nhựa">Nhựa</option>
@@ -192,16 +250,15 @@ export default function Shop() {
             </div>
           </div>
 
-          {/* Phần Sắp xếp + Nút xóa (cùng hàng) */}
-          <div className="flex flex-col sm:flex-row gap-4 lg:gap-6 min-w-fit">
-            <div className="w-full sm:w-56">
-              <div className="text-sm font-medium text-gray-700 mb-2">
+          <div className="flex flex-col w-full sm:flex-row gap-4 lg:gap-6 min-w-fit">
+            <div className="w-full sm:w-56 min-w-56">
+              <div className="text-sm font-medium text-[var(--color-text-secondary)] mb-2">
                 Sắp xếp theo
               </div>
               <select
                 value={sortBy}
                 onChange={handleFilterChange(setSortBy)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:border-black bg-white text-sm"
+                className="site-select text-sm"
               >
                 <option value="default">Mặc định</option>
                 <option value="newest">Mới nhất</option>
@@ -213,7 +270,7 @@ export default function Shop() {
 
             <button
               onClick={resetFilters}
-              className="flex items-center justify-center gap-2 px-6 py-3 border border-gray-300 hover:bg-gray-100 rounded-2xl text-sm font-medium transition-colors whitespace-nowrap mt-auto"
+              className="site-button site-button--ghost w-full sm:w-auto min-w-40 whitespace-nowrap mt-0 sm:mt-auto"
             >
               <X size={18} />
               Xóa bộ lọc
@@ -222,70 +279,69 @@ export default function Shop() {
         </div>
       </div>
 
-      {/* Số lượng sản phẩm */}
-      <div className="flex justify-between items-center mb-8">
-        <p className="text-gray-600">
+      <div className="flex justify-between items-center mb-8 gap-4 flex-wrap">
+        <p className="site-copy">
           Hiển thị{" "}
-          <span className="font-semibold text-black">
+          <span className="font-semibold text-[var(--color-text-primary)]">
             {currentProducts.length}
           </span>{" "}
           /{" "}
-          <span className="font-semibold text-black">
+          <span className="font-semibold text-[var(--color-text-primary)]">
             {filteredProducts.length}
           </span>{" "}
           sản phẩm
         </p>
-        <p className="text-sm text-gray-500">
-          Trang {currentPage} / {totalPages || 1}
+        <p className="text-sm text-[var(--color-text-secondary)]">
+          Trang {currentPage} / {totalPages}
         </p>
       </div>
 
-      {/* Danh sách sản phẩm */}
       {currentProducts.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 sm:gap-6 xl:gap-8">
           {currentProducts.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>
       ) : (
-        <div className="text-center py-20">
-          <p className="text-xl text-gray-500">
+        <div className="site-card text-center py-16 px-6">
+          <p className="text-xl text-[var(--color-text-secondary)]">
             Không tìm thấy sản phẩm nào phù hợp
           </p>
           <button
             onClick={resetFilters}
-            className="mt-6 px-8 py-3 bg-black text-white rounded-2xl hover:bg-gray-800"
+            className="site-button site-button--primary mt-6"
           >
             Xóa bộ lọc
           </button>
         </div>
       )}
 
-      {/* Phân trang */}
       {totalPages > 1 && (
-        <div className="flex justify-center items-center gap-4 mt-12">
+        <div className="flex justify-center items-center gap-4 mt-12 flex-wrap">
           <button
             onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
             disabled={currentPage === 1}
-            className="flex items-center gap-2 px-6 py-3 border border-gray-300 rounded-2xl hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition"
+            className="site-button site-button--secondary"
           >
             <ChevronLeft size={20} /> Trước
           </button>
 
-          <div className="flex gap-2">
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-              <button
-                key={page}
-                onClick={() => setCurrentPage(page)}
-                className={`w-10 h-10 rounded-2xl font-medium transition ${
-                  currentPage === page
-                    ? "bg-black text-white"
-                    : "border border-gray-300 hover:bg-gray-100"
-                }`}
-              >
-                {page}
-              </button>
-            ))}
+          <div className="flex gap-2 flex-wrap justify-center">
+            {Array.from({ length: totalPages }, (_, index) => index + 1).map(
+              (page) => (
+                <button
+                  key={page}
+                  onClick={() => setCurrentPage(page)}
+                  className={`min-w-10 h-10 px-3 rounded-full font-medium transition ${
+                    currentPage === page
+                      ? "bg-[var(--color-surface-base)] text-white"
+                      : "border border-[var(--color-border-strong)] bg-white hover:bg-[rgba(16,4,4,0.04)]"
+                  }`}
+                >
+                  {page}
+                </button>
+              ),
+            )}
           </div>
 
           <button
@@ -293,7 +349,7 @@ export default function Shop() {
               setCurrentPage((prev) => Math.min(prev + 1, totalPages))
             }
             disabled={currentPage === totalPages}
-            className="flex items-center gap-2 px-6 py-3 border border-gray-300 rounded-2xl hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition"
+            className="site-button site-button--secondary"
           >
             Sau <ChevronRight size={20} />
           </button>
