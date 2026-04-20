@@ -1,4 +1,4 @@
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, useEffect } from "react";
 import { Navigate, Outlet, Route, Routes, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar.jsx";
 import Footer from "./components/Footer.jsx"; // ← Đã thêm
@@ -44,9 +44,20 @@ function AdminRouteGuard() {
   return <Outlet />;
 }
 
+function ScrollToTopOnRouteChange() {
+  const location = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname, location.search]);
+
+  return null;
+}
+
 function App() {
   return (
     <div className="casio-shell min-h-screen flex flex-col">
+      <ScrollToTopOnRouteChange />
       <Navbar />
 
       <main className="flex-1 pt-16">
