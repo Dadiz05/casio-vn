@@ -31,7 +31,7 @@ type Props = {
 export default function RootLayout({ children }: Props) {
   return (
     <html lang="vi">
-      <body>
+      <body suppressHydrationWarning>
         <Suspense fallback={null}>
           <AppShell>{children}</AppShell>
         </Suspense>
