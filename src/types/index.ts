@@ -1,4 +1,9 @@
-// Product Types
+export type ProductCategory = 'G-Shock' | 'Edifice' | 'Baby-G' | 'Classic'
+
+export type ProductGender = 'Nam' | 'Nữ' | 'Unisex'
+
+export type ProductMovement = 'Quartz' | 'Solar' | 'Bluetooth' | 'Automatic'
+
 export interface ProductSpecs {
   size: string
   weight: string
@@ -12,22 +17,40 @@ export interface ProductSpecs {
   other: string
 }
 
+export interface ProductColorVariant {
+  name: string
+  value: string
+  hex: string
+  image?: string
+}
+
 export interface Product {
   id: string
+  sku: string
   name: string
   price: number
-  category: string
+  originalPrice?: number
+  category: ProductCategory
   image: string
   images?: string[]
   description: string
   fullDescription?: string
   specs?: ProductSpecs
   features?: string[]
-  rating?: number
-  reviews?: number
+  rating: number
+  reviews: number
+  stock: number
+  sold: number
+  badge?: string
+  isNew?: boolean
+  isLimited?: boolean
+  gender: ProductGender
+  movement: ProductMovement
+  warrantyMonths: number
+  tags?: string[]
+  colorVariants?: ProductColorVariant[]
 }
 
-// User Types
 export type UserRole = 'admin' | 'user'
 
 export interface User {
@@ -36,40 +59,65 @@ export interface User {
   email: string
   role: UserRole
   status?: 'active' | 'inactive'
+  phone?: string
+  address?: string
   createdAt?: string
   updatedAt?: string
 }
 
-// Cart Types
-export interface CartItem {
-  id: string
-  productId: string
-  product: Product
+export interface CartItem extends Product {
   quantity: number
-  price: number
 }
 
-export interface Cart {
-  items: CartItem[]
+export interface CartSummary {
+  subtotal: number
+  discount: number
+  shippingFee: number
   total: number
+  itemCount: number
 }
 
-// Order Types
-export type OrderStatus = 'pending' | 'completed' | 'cancelled'
+export type OrderStatus = 'pending' | 'confirmed' | 'shipping' | 'completed' | 'cancelled'
+
+export type PaymentMethod = 'cod' | 'bank' | 'card'
+
+export interface OrderLineItem {
+  productId: string
+  sku: string
+  name: string
+  image: string
+  price: number
+  quantity: number
+}
+
+export interface ShippingInfo {
+  fullName: string
+  phone: string
+  email: string
+  address: string
+  city: string
+  note?: string
+}
 
 export interface Order {
   id: string
-  customerId: string
+  customerId?: string
   customerName: string
   customerEmail: string
-  items: CartItem[]
+  shippingInfo: ShippingInfo
+  items: OrderLineItem[]
+  subtotal: number
+  discount: number
+  shippingFee: number
   total: number
   status: OrderStatus
+  paymentMethod: PaymentMethod
+  paymentStatus: 'unpaid' | 'paid'
+  voucherCode?: string
   createdAt: string
   updatedAt?: string
 }
 
-// Auth Types
 export interface LoginInput {
   email: string
   password: string
@@ -82,34 +130,19 @@ export interface RegisterInput {
   confirmPassword: string
 }
 
-// Store Types
-export interface AppStore {
-  // Auth
-  user: User | null
-  setUser: (userData: User) => void
-  logout: () => void
-
-  // Products
-  products: Product[]
-  addProduct: (product: Product) => void
-  updateProduct: (id: string, product: Partial<Product>) => void
-  deleteProduct: (id: string) => void
-
-  // Users
-  users: User[]
-  addUser: (user: User) => void
-  updateUser: (id: string, user: Partial<User>) => void
-  deleteUser: (id: string) => void
-
-  // Orders
-  orders: Order[]
-  addOrder: (order: Order) => void
-  updateOrderStatus: (id: string, status: OrderStatus) => void
-
-  // Cart
-  cart: Cart
-  addToCart: (product: Product, quantity: number) => void
-  removeFromCart: (productId: string) => void
-  updateCartQuantity: (productId: string, quantity: number) => void
-  clearCart: () => void
+export interface ProductFormInput {
+  name: string
+  price: string
+  originalPrice: string
+  category: ProductCategory
+  image: string
+  description: string
+  fullDescription: string
+  features: string
+  tags: string
+  stock: string
+  movement: ProductMovement
+  gender: ProductGender
+  warrantyMonths: string
+  badge: string
 }

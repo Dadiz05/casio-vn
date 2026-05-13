@@ -16,7 +16,7 @@ interface SearchReturn {
 
 export default function useSearch(
   products: Product[] = [],
-  { debounceMs = 300, maxResults = 8 }: SearchOptions = {},
+  { debounceMs = 300, maxResults = 8 }: SearchOptions = {}
 ): SearchReturn {
   const [query, setQuery] = useState<string>('')
   const debouncedQuery = useDebounce<string>(query, debounceMs)
@@ -41,4 +41,3 @@ export default function useSearch(
     isSearching: debouncedQuery.trim().length > 0,
   }
 }
-

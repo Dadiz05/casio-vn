@@ -10,6 +10,12 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+.next
+coverage
+*.tsbuildinfo
+.claude
+.vercel
+.env
 *.local
 
 # Editor directories and files

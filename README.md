@@ -1,236 +1,133 @@
-# 🕐 Casio VN Store - E-commerce Platform
+# Casio VN Store
 
-A modern, full-featured e-commerce web application built with React, Vite, and TypeScript. The platform showcases Casio watches with a complete shopping experience including cart management, product filtering, and admin dashboard.
+Web app thương mại điện tử bán đồng hồ Casio, được nâng cấp theo yêu cầu đề gốc: **Next.js App Router**, React, TypeScript, API Routes, JWT auth cookies, SSR/SSG/ISR, testing và CI.
 
-## ✨ Features
+## Thông tin báo cáo
 
-### Customer Features
-- 🔐 **User Authentication** - Register, login, user profiles
-- 🛒 **Shopping Cart** - Add/remove items, cart management
-- 🔍 **Advanced Search** - Real-time product search with debouncing
-- 📊 **Product Filtering** - Filter by category, price range, materials
-- 📄 **Product Details** - Detailed product specs, galleries, features
-- 📱 **Responsive Design** - Works on desktop, tablet, mobile
-- 💳 **Checkout** - Smooth checkout process
+- Môn học: Phát triển giao diện ứng dụng
+- Đề tài: Xây dựng web app thương mại điện tử bán đồng hồ Casio
+- Sinh viên/Nhóm: Nguyễn Gia Vĩ
+- Deploy: Vercel
+- Ngày cập nhật: 14/05/2026
 
-### Admin Features
-- 📈 **Dashboard** - Revenue metrics and order statistics
-- 📦 **Product Management** - CRUD operations for products
-- 👥 **User Management** - Manage user accounts and roles
-- 📋 **Order Management** - Track and update order statuses
-- 📊 **Revenue Charts** - Visual analytics with bar charts
+## Tính năng chính
 
-### Technical Features
-- ✅ **TypeScript** - Full type safety
-- 🧪 **Testing** - Unit and integration tests with Jest
-- 🔄 **CI/CD** - GitHub Actions automation
-- 🎨 **Tailwind CSS** - Modern styling framework
-- 🔧 **ESLint + Prettier** - Code quality standards
-- 🪝 **Git Hooks** - Pre-commit linting and formatting
+- Auth: đăng ký, đăng nhập, đăng xuất, JWT access token + refresh token cookies.
+- Phân quyền: `admin` / `user`, middleware bảo vệ `/admin/*`.
+- CRUD lõi: Products, Orders, Users qua giao diện admin và API Routes.
+- Shop: search, filter nhiều tiêu chí, sort và pagination.
+- Dashboard: thống kê doanh thu, đơn hàng, khách hàng, tồn kho và biểu đồ.
+- Upload: upload ảnh sản phẩm có preview, kiểm tra JPG/PNG/WebP tối đa 2MB.
+- AI hỗ trợ: tư vấn sản phẩm, tạo nội dung sản phẩm, insight dashboard qua `/api/ai/*`.
+- SEO: metadata per page, canonical, Open Graph, sitemap.
+- Performance: lazy route chunks, `next/image` ở ProductCard, memo cho filter/search.
 
-## 🚀 Quick Start
+## Tech stack
 
-### Prerequisites
-- Node.js 18+
-- npm or yarn
+| Nhóm          | Công nghệ                                                     |
+| ------------- | ------------------------------------------------------------- |
+| Framework     | Next.js 15 App Router                                         |
+| UI            | React 19, Tailwind CSS 4, Lucide React                        |
+| Language      | TypeScript                                                    |
+| State         | Zustand + persist localStorage                                |
+| Server state  | TanStack React Query provider                                 |
+| Form/Validate | React Hook Form, Zod                                          |
+| Auth          | Custom JWT bằng `jose`, HTTP-only cookies, refresh token flow |
+| API           | Next.js Route Handlers                                        |
+| Chart         | Recharts                                                      |
+| Testing       | Jest, React Testing Library                                   |
+| Quality       | ESLint, Prettier, Husky, lint-staged                          |
+| CI/CD         | GitHub Actions + Vercel                                       |
 
-### Installation
+## Setup local
 
 ```bash
-# Clone the repository
-git clone https://github.com/yourusername/casio-vn-store.git
-cd casio-vn-store
-
-# Install dependencies
 npm install
-
-# Create environment file
 cp .env.example .env.local
-```
-
-### Development
-
-```bash
-# Start dev server (runs at http://localhost:5173)
 npm run dev
-
-# Lint code
-npm run lint
-
-# Format code
-npm run format
-
-# Type check
-npm run type-check
 ```
 
-### Production Build
+App chạy mặc định tại:
 
-```bash
-# Build for production
-npm run build
-
-# Preview production build
-npm run preview
+```txt
+http://localhost:3000
 ```
 
-### Testing
+## Scripts
 
-```bash
-# Run tests once
-npm run test
+| Lệnh                    | Mục đích                    |
+| ----------------------- | --------------------------- |
+| `npm run dev`           | Chạy Next dev server        |
+| `npm run build`         | Build production            |
+| `npm run preview`       | Chạy `next start` sau build |
+| `npm run lint`          | ESLint                      |
+| `npm run type-check`    | TypeScript check            |
+| `npm run test`          | Jest tests                  |
+| `npm run test:coverage` | Test coverage               |
+| `npm run format`        | Prettier                    |
 
-# Run tests in watch mode
-npm run test:watch
+## Tài khoản demo
 
-# Generate coverage report
-npm run test:coverage
-```
+| Vai trò | Email            | Mật khẩu   |
+| ------- | ---------------- | ---------- |
+| Admin   | `admin@casio.vn` | `admin123` |
+| User    | `user@casio.vn`  | `user123`  |
 
-## 📋 Tech Stack
+## Cấu trúc thư mục
 
-| Category | Technologies |
-|----------|--------------|
-| **Frontend** | React 19, Vite 8, React Router 7 |
-| **Language** | TypeScript, JavaScript (ES2020) |
-| **Styling** | Tailwind CSS 4, CSS3 |
-| **State Management** | Zustand 5 |
-| **Forms** | React Hook Form, Zod (validation) |
-| **Icons** | Lucide React |
-| **HTTP Client** | Axios |
-| **Testing** | Jest, React Testing Library |
-| **Code Quality** | ESLint, Prettier, Husky |
-| **Build Tool** | Vite |
-| **CI/CD** | GitHub Actions |
-
-## 📁 Project Structure
-
-```
+```txt
 src/
-├── components/       # Reusable UI components
-│   ├── ProductCard.tsx
-│   ├── SearchBar.tsx
-│   ├── CartDrawer.tsx
-│   ├── Navbar.tsx
-│   ├── Footer.tsx
-│   └── admin/
-│       ├── RevenueBarChart.tsx
-│       └── ...
-├── pages/           # Page components (route-based)
-│   ├── Home.tsx
-│   ├── Shop.tsx
-│   ├── ProductDetail.tsx
-│   ├── Cart.tsx
-│   ├── Checkout.tsx
-│   ├── Login.tsx
-│   ├── Register.tsx
-│   └── admin/
-│       ├── Dashboard.tsx
-│       ├── Products.tsx
-│       ├── Orders.tsx
-│       └── Users.tsx
-├── hooks/           # Custom React hooks
-│   ├── useAuth.ts
-│   ├── useCart.ts
-│   ├── useDebounce.ts
-│   └── useSearch.ts
-├── store/           # Zustand state management
-│   └── useStore.ts
-├── schemas/         # Zod validation schemas
-│   ├── auth.ts
-│   └── admin.ts
-├── types/           # TypeScript types
-│   └── index.ts
-├── __tests__/       # Test files
-├── css/             # Global styles
-└── main.tsx         # Entry point
+  app/                  Next.js App Router pages + API routes
+  components/           Layout/common components
+  data/                 Seed products/users/orders
+  features/             Feature components: admin, products, search
+  hooks/                Custom hooks
+  lib/                  Client/server utilities
+  store/                Zustand store
+  styles/               Global CSS
+  types/                TypeScript types
+  views/                Client UI views reused by app routes
+  __tests__/            Unit + integration tests
+docs/                   Báo cáo, API, architecture, schema, sprint reports
 ```
 
-## 🔐 Demo Credentials
+## Render strategy
 
-### Admin Account
-- **Email**: admin@casio.vn
-- **Password**: admin123
+- SSR/dynamic: `/admin`, `/admin/products`, `/admin/orders`, `/admin/users`, `/profile`, `/checkout`.
+- SSG/ISR: `/product/[id]` dùng `generateStaticParams()` và `revalidate = 3600`.
+- Static: `/`, `/shop`, policy pages, login/register, cart/wishlist.
 
-### User Account
-- **Email**: user@casio.vn
-- **Password**: user123
+## API Routes
 
-## 🧪 Testing
+- Auth: `POST /api/auth/login`, `POST /api/auth/register`, `POST /api/auth/logout`, `POST /api/auth/refresh`, `GET /api/auth/me`.
+- Products: `GET/POST /api/products`, `GET/PATCH/DELETE /api/products/:id`.
+- Orders: `GET/POST /api/orders`, `GET /api/orders/me`, `PATCH /api/orders/:id/status`.
+- Users: `GET/POST /api/users`, `PATCH/DELETE /api/users/:id`.
+- AI: `POST /api/ai/recommend`, `POST /api/ai/product-copy`, `POST /api/ai/insights`.
 
-The project includes unit and integration tests for:
-- Custom hooks (useDebounce, useSearch, useAuth, useCart)
-- Components (ProductCard, SearchBar, CartDrawer)
-- Pages (Login, Register)
+## Đối chiếu yêu cầu đề gốc
 
-Run tests with:
-```bash
-npm run test
-npm run test:watch
-npm run test:coverage
-```
+| Yêu cầu                         | Trạng thái                                                      |
+| ------------------------------- | --------------------------------------------------------------- |
+| Next.js App Router              | Đạt                                                             |
+| Metadata/SEO per page           | Đạt                                                             |
+| Ít nhất 1 SSR                   | Đạt: admin/profile/checkout dynamic SSR                         |
+| Ít nhất 1 SSG/ISR               | Đạt: product detail ISR                                         |
+| API Routes/Server Actions       | Đạt: Route Handlers cho auth/products/orders/users/AI           |
+| Auth + phân quyền               | Đạt: JWT cookies + middleware admin                             |
+| Refresh token/re-login flow     | Đạt: `/api/auth/refresh`, refresh cookie 7 ngày                 |
+| 3 CRUD modules                  | Đạt: Products, Orders, Users                                    |
+| Search/filter/pagination        | Đạt                                                             |
+| Dashboard/báo cáo               | Đạt                                                             |
+| Upload ảnh + preview + validate | Đạt                                                             |
+| Testing                         | Đạt cơ bản: 16 tests, gồm unit/component và 3 integration flows |
+| CI/CD                           | Đạt CI; Vercel redeploy khi push Git                            |
 
-## 🔄 CI/CD Pipeline
+## Tài liệu
 
-GitHub Actions automatically:
-- Runs linting on commits
-- Executes type checking
-- Runs test suite
-- Builds the application
-- Uploads coverage reports
-
-See `.github/workflows/ci.yml` for configuration.
-
-## 📝 Form Validation
-
-All forms use React Hook Form with Zod schema validation:
-- **Login/Register**: Email format, password strength
-- **Product Form**: Name, price, category validation
-- **User Form**: Email, name validation
-
-## 🌐 Deployment
-
-### Recommended Platforms
-1. **Vercel** (recommended for Vite)
-2. **Netlify**
-3. **AWS Amplify**
-4. **GitHub Pages**
-
-### Environment Variables
-```env
-VITE_API_URL=http://localhost:3000/api
-VITE_APP_NAME=Casio VN Store
-VITE_APP_ENV=development
-```
-
-## 📚 Documentation
-
-- [API Specification](./docs/api.md) - API endpoints documentation
-- [Database Schema](./docs/schema.md) - Data model documentation
-- [Architecture](./docs/architecture.md) - System architecture overview
-
-## 🤝 Contributing
-
-1. Create a feature branch: `git checkout -b feature/your-feature`
-2. Make your changes
-3. Commit with conventional commits: `git commit -m "feat: add new feature"`
-4. Push to branch: `git push origin feature/your-feature`
-5. Open a Pull Request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 👨‍💻 Author
-
-**Nguyễn Gia Vỉ**
-
-## 🙏 Acknowledgments
-
-- Casio Vietnam for the watch products
-- React and Vite communities
-- All contributors and maintainers
-
----
-
-Made with ❤️ for Casio Vietnam e-commerce
+- [Báo cáo dự án](docs/bao-cao-du-an.md)
+- [Architecture](docs/architecture.md)
+- [API spec](docs/api.md)
+- [Schema](docs/schema.md)
+- [AI integration](docs/ai.md)
+- Sprint reports: [1](docs/sprints/sprint-1.md), [2](docs/sprints/sprint-2.md), [3](docs/sprints/sprint-3.md), [4](docs/sprints/sprint-4.md), [5](docs/sprints/sprint-5.md), [6](docs/sprints/sprint-6.md)
