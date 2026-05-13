@@ -37,20 +37,17 @@ export default function SearchBar({ products = [] }: Props) {
           .filter(
             (p) =>
               p.name?.toLowerCase().includes(debouncedQuery.toLowerCase()) ||
-              p.category?.toLowerCase().includes(debouncedQuery.toLowerCase()),
+              p.category?.toLowerCase().includes(debouncedQuery.toLowerCase())
           )
           .slice(0, 8)
       : []
 
   const filteredCategories =
     debouncedQuery.trim().length > 0
-      ? CATEGORIES.filter((c) =>
-          c.label.toLowerCase().includes(debouncedQuery.toLowerCase()),
-        )
+      ? CATEGORIES.filter((c) => c.label.toLowerCase().includes(debouncedQuery.toLowerCase()))
       : CATEGORIES
 
-  const showDropdown =
-    open && (debouncedQuery.length > 0 || filteredCategories.length > 0)
+  const showDropdown = open && (debouncedQuery.length > 0 || filteredCategories.length > 0)
   const totalItems = filteredCategories.length + filteredProducts.length
 
   // Close on outside click
@@ -157,11 +154,7 @@ export default function SearchBar({ products = [] }: Props) {
       </div>
 
       {showDropdown && (
-        <div
-          className="searchbar-dropdown"
-          id="casio-search-results"
-          role="listbox"
-        >
+        <div className="searchbar-dropdown" id="casio-search-results" role="listbox">
           {/* Categories section */}
           {filteredCategories.length > 0 && (
             <div className="searchbar-section">
@@ -170,7 +163,7 @@ export default function SearchBar({ products = [] }: Props) {
                 {filteredCategories.map((cat, i) => (
                   <button
                     key={cat.path}
-                    className={`searchbar-category-item ${activeIndex === i ? "active" : ""}`}
+                    className={`searchbar-category-item ${activeIndex === i ? 'active' : ''}`}
                     onMouseDown={() => handleCategoryClick(cat.path)}
                     onMouseEnter={() => setActiveIndex(i)}
                     role="option"
@@ -187,14 +180,12 @@ export default function SearchBar({ products = [] }: Props) {
             <div className="searchbar-section">
               <div className="searchbar-section-title">Sản phẩm</div>
               {filteredProducts.map((product, i) => {
-                const idx = filteredCategories.length + i;
-                const hasDiscount =
-                  product.originalPrice &&
-                  product.originalPrice > product.price;
+                const idx = filteredCategories.length + i
+                const hasDiscount = product.originalPrice && product.originalPrice > product.price
                 return (
                   <button
                     key={product._id || product.id}
-                    className={`searchbar-product-item ${activeIndex === idx ? "active" : ""}`}
+                    className={`searchbar-product-item ${activeIndex === idx ? 'active' : ''}`}
                     onMouseDown={() => handleProductClick(product)}
                     onMouseEnter={() => setActiveIndex(idx)}
                     role="option"
@@ -205,9 +196,7 @@ export default function SearchBar({ products = [] }: Props) {
                       alt={product.name}
                     />
                     <div className="searchbar-product-info">
-                      <div className="searchbar-product-name">
-                        {product.name}
-                      </div>
+                      <div className="searchbar-product-name">{product.name}</div>
                       <div className="searchbar-product-price">
                         {hasDiscount && (
                           <span className="searchbar-price-original">
@@ -220,7 +209,7 @@ export default function SearchBar({ products = [] }: Props) {
                       </div>
                     </div>
                   </button>
-                );
+                )
               })}
             </div>
           )}
@@ -243,5 +232,5 @@ export default function SearchBar({ products = [] }: Props) {
         </div>
       )}
     </div>
-  );
+  )
 }
