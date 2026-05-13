@@ -1,167 +1,149 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { ShoppingCart, User, LogOut, Menu, X } from 'lucide-react'
+import { Link, NavLink, useNavigate } from 'react-router-dom'
+import { Heart, LogOut, Menu, Settings, ShoppingCart, User, X } from 'lucide-react'
 import { useStore } from '@/store/useStore'
 import SearchBar from './SearchBar'
+
+const navLinkClass = ({ isActive }: { isActive: boolean }) =>
+  `site-nav-link ${isActive ? 'site-nav-link--active' : ''}`
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const navigate = useNavigate()
 
-  const { user, cart, logout, products } = useStore()
+  const { user, cart, logout, products, wishlistIds } = useStore()
   const isAdmin = user?.role === 'admin'
-
   const cartCount = cart.reduce((total, item) => total + item.quantity, 0)
+
+  const closeMenu = () => setIsMenuOpen(false)
 
   const handleLogout = () => {
     logout()
+    closeMenu()
     navigate('/login')
-    setIsMenuOpen(false)
   }
 
   const handleAdminAccess = () => {
-    if (!isAdmin) {
-      navigate('/')
-      setIsMenuOpen(false)
-      return
-    }
-
-    navigate('/admin')
-    setIsMenuOpen(false)
+    closeMenu()
+    navigate(isAdmin ? '/admin' : '/')
   }
 
   return (
     <nav className="site-header text-[var(--color-text-primary)]">
       <div className="casio-container">
-        <div className="flex items-center justify-between gap-4 py-4">
-          <Link to="/" className="site-brand text-xl sm:text-2xl">
+        <div className="site-header__row">
+          <Link to="/" className="site-brand" onClick={closeMenu}>
             CASIO <span className="site-brand__accent">VN</span>
           </Link>
 
-          <div className="flex-1 max-w-xs sm:max-w-md md:max-w-xl block">
+          <div className="site-header__search">
             <SearchBar products={products} />
           </div>
-          <div className="hidden lg:flex items-center gap-2 lg:gap-3">
-            <Link to="/" className="site-nav-link">
-              Trang chủ
-            </Link>
-            <Link to="/shop" className="site-nav-link">
-              Cửa hàng
-            </Link>
-            <Link to="/cart" className="site-nav-link">
-              <ShoppingCart size={20} />
-              Giỏ hàng
-              {cartCount > 0 && (
-                <span className="site-chip text-[var(--color-text-primary)] bg-[rgba(221,51,51,0.14)] border-[rgba(221,51,51,0.2)]">
-                  {cartCount}
-                </span>
-              )}
-            </Link>
 
-            {user ? (
-              <div className="flex items-center gap-2">
-                <Link to="/profile" className="site-nav-link">
-                  <User size={20} />
-                  <span>{user.name}</span>
-                </Link>
-
-                {isAdmin && (
-                  <button
-                    onClick={handleAdminAccess}
-                    className="site-nav-button font-medium"
-                  >
-                    Quản trị
-                  </button>
-                )}
-
-                <button onClick={handleLogout} className="site-nav-button">
-                  <LogOut size={20} />
-                  Đăng xuất
-                </button>
-              </div>
-            ) : (
-              <Link to="/login" className="site-nav-link">
-                Đăng nhập
-              </Link>
-            )}
-          </div>
-
-          <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="site-nav-button lg:hidden min-w-11 px-3 py-2"
-            aria-expanded={isMenuOpen}
-            aria-label={isMenuOpen ? "Đóng menu" : "Mở menu"}
-          >
-            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
-        </div>
-
-        {isMenuOpen && (
-          <div className="lg:hidden pb-5 pt-1">
-            <div className="casio-card bg-[var(--color-surface-muted)] p-4 space-y-2">
-              <Link
-                to="/"
-                className="site-nav-link w-full justify-start px-0 py-2"
-                onClick={() => setIsMenuOpen(false)}
-              >
+          <div className="flex items-center gap-2">
+            <div className="hidden items-center gap-2 lg:flex">
+              <NavLink to="/" className={navLinkClass}>
                 Trang chủ
-              </Link>
-              <Link
-                to="/shop"
-                className="site-nav-link w-full justify-start px-0 py-2"
-                onClick={() => setIsMenuOpen(false)}
-              >
+              </NavLink>
+              <NavLink to="/shop" className={navLinkClass}>
                 Cửa hàng
-              </Link>
-              <Link
-                to="/cart"
-                className="site-nav-link w-full justify-start px-0 py-2"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <ShoppingCart size={20} />
-                Giỏ hàng ({cartCount})
-              </Link>
+              </NavLink>
+              <NavLink to="/wishlist" className={navLinkClass}>
+                <Heart size={18} />
+                Yêu thích
+                {wishlistIds.length > 0 && <span className="nav-count">{wishlistIds.length}</span>}
+              </NavLink>
+              <NavLink to="/cart" className={navLinkClass}>
+                <ShoppingCart size={18} />
+                Giỏ hàng
+                {cartCount > 0 && <span className="nav-count">{cartCount}</span>}
+              </NavLink>
 
               {user ? (
                 <>
-                  <Link
-                    to="/profile"
-                    className="site-nav-link w-full justify-start px-0 py-2"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    <User size={20} />
-                    {user.name}
-                  </Link>
-
+                  <NavLink to="/profile" className={navLinkClass}>
+                    <User size={18} />
+                    <span className="max-w-28 truncate">{user.name}</span>
+                  </NavLink>
                   {isAdmin && (
-                    <button
-                      onClick={handleAdminAccess}
-                      className="site-nav-button w-full justify-start"
-                    >
-                      Quản trị viên
+                    <button onClick={handleAdminAccess} className="site-nav-button font-medium">
+                      <Settings size={18} />
+                      Quản trị
                     </button>
                   )}
-
-                  <button
-                    onClick={handleLogout}
-                    className="site-nav-button w-full justify-start"
-                  >
-                    Đăng xuất
+                  <button onClick={handleLogout} className="site-nav-button">
+                    <LogOut size={18} />
                   </button>
                 </>
               ) : (
-                <Link
-                  to="/login"
-                  className="site-nav-link w-full justify-start px-0 py-2"
-                  onClick={() => setIsMenuOpen(false)}
-                >
+                <NavLink to="/login" className={navLinkClass}>
                   Đăng nhập
-                </Link>
+                </NavLink>
+              )}
+            </div>
+
+            <div className="relative lg:hidden">
+              <button
+                onClick={() => setIsMenuOpen((current) => !current)}
+                className="site-nav-button px-3 py-2"
+                aria-expanded={isMenuOpen}
+                aria-label={isMenuOpen ? 'Đóng menu' : 'Mở menu'}
+              >
+                {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              </button>
+
+              {isMenuOpen && (
+                <div className="mobile-menu-panel">
+                  <NavLink to="/" className={navLinkClass} onClick={closeMenu}>
+                    Trang chủ
+                  </NavLink>
+                  <NavLink to="/shop" className={navLinkClass} onClick={closeMenu}>
+                    Cửa hàng
+                  </NavLink>
+                  <NavLink to="/wishlist" className={navLinkClass} onClick={closeMenu}>
+                    <Heart size={20} />
+                    Yêu thích ({wishlistIds.length})
+                  </NavLink>
+                  <NavLink to="/cart" className={navLinkClass} onClick={closeMenu}>
+                    <ShoppingCart size={20} />
+                    Giỏ hàng ({cartCount})
+                  </NavLink>
+
+                  {user ? (
+                    <>
+                      <NavLink to="/profile" className={navLinkClass} onClick={closeMenu}>
+                        <User size={20} />
+                        {user.name}
+                      </NavLink>
+                      {isAdmin && (
+                        <button
+                          onClick={handleAdminAccess}
+                          className="site-nav-button justify-start"
+                        >
+                          <Settings size={20} />
+                          Quản trị viên
+                        </button>
+                      )}
+                      <button onClick={handleLogout} className="site-nav-button justify-start">
+                        <LogOut size={20} />
+                        Đăng xuất
+                      </button>
+                    </>
+                  ) : (
+                    <NavLink to="/login" className={navLinkClass} onClick={closeMenu}>
+                      Đăng nhập
+                    </NavLink>
+                  )}
+                </div>
               )}
             </div>
           </div>
-        )}
+        </div>
+
+        <div className="site-header__mobile-search">
+          <SearchBar products={products} />
+        </div>
       </div>
     </nav>
-  );
+  )
 }
