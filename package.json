@@ -13,7 +13,7 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "preview": "next start",
-    "prepare": "husky install",
+    "prepare": "husky",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
