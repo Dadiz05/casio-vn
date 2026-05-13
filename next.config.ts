@@ -7,6 +7,7 @@ const currentDir = dirname(fileURLToPath(import.meta.url))
 const nextConfig: NextConfig = {
   outputFileTracingRoot: currentDir,
   images: {
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',
