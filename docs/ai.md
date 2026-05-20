@@ -6,7 +6,7 @@ AI chạy qua Next.js API Routes tại `/api/ai/*`.
 
 ```env
 OPENAI_API_KEY=
-OPENAI_MODEL=gpt-5.4-mini
+OPENAI_MODEL=gpt-5-mini
 ```
 
 Nếu không cấu hình `OPENAI_API_KEY`, server dùng fallback nội bộ để demo không bị lỗi.

@@ -11,7 +11,22 @@ import type {
 
 type AiKind = 'recommend' | 'product-copy' | 'insights'
 
-const DEFAULT_MODEL = 'gpt-5.4-mini'
+const DEFAULT_MODEL = 'gpt-5-mini'
+
+type OpenAiResponseContent = {
+  type?: string
+  text?: string
+}
+
+type OpenAiResponseOutput = {
+  type?: string
+  content?: OpenAiResponseContent[]
+}
+
+type OpenAiResponse = {
+  output_text?: string
+  output?: OpenAiResponseOutput[]
+}
 
 const normalizeText = (value: string) =>
   value
@@ -237,6 +252,18 @@ const extractJson = (text: string) => {
   return fenced?.[1] ?? trimmed
 }
 
+const extractOutputText = (data: OpenAiResponse) => {
+  if (data.output_text) return data.output_text
+
+  return (
+    data.output
+      ?.flatMap((item) => item.content ?? [])
+      .map((content) => content.text)
+      .filter(Boolean)
+      .join('\n') || ''
+  )
+}
+
 async function requestOpenAi<TResult>(kind: AiKind, payload: unknown): Promise<TResult | null> {
   const apiKey = process.env.OPENAI_API_KEY
   if (!apiKey) return null
@@ -249,6 +276,9 @@ async function requestOpenAi<TResult>(kind: AiKind, payload: unknown): Promise<T
     },
     body: JSON.stringify({
       model: process.env.OPENAI_MODEL || DEFAULT_MODEL,
+      text: {
+        format: { type: 'json_object' },
+      },
       input: [
         {
           role: 'system',
@@ -264,8 +294,8 @@ async function requestOpenAi<TResult>(kind: AiKind, payload: unknown): Promise<T
   })
 
   if (!response.ok) return null
-  const data = (await response.json()) as { output_text?: string }
-  const outputText = data.output_text
+  const data = (await response.json()) as OpenAiResponse
+  const outputText = extractOutputText(data)
   if (!outputText) return null
 
   try {
